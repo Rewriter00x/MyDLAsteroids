@@ -25,11 +25,15 @@ void MyDLAsteroidsFramework::PreInit(int& width, int& height, bool& fullscreen) 
 bool MyDLAsteroidsFramework::Init() {
     getScreenSize(ScreenWidth, ScreenHeight);
     
+    showCursor(false);
+    
     BackgroundSprite = createSprite("data/background.png");
     CharacterSprite = createSprite("data/spaceship.png");
+    MouseSprite = createSprite("data/circle.tga");
     
     getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
     getSpriteSize(CharacterSprite, CharacterSpriteWidth, CharacterSpriteHeight);
+    getSpriteSize(MouseSprite, MouseSpriteWidth, MouseSpriteHeight);
     
     if (!(BackgroundSprite && CharacterSprite))
         return false;
@@ -49,11 +53,15 @@ bool MyDLAsteroidsFramework::Tick() {
     // Drawing character
     drawSprite(CharacterSprite, (ScreenWidth - CharacterSpriteWidth) / 2, (ScreenHeight - CharacterSpriteHeight) / 2);
     
+    // Drawing cursor
+    drawSprite(MouseSprite, MouseX - MouseSpriteWidth / 2, MouseY - MouseSpriteHeight / 2);
+    
     return false;
 }
 
 void MyDLAsteroidsFramework::onMouseMove(int x, int y, int xrelative, int yrelative) {
-    
+    MouseX = x;
+    MouseY = y;
 }
 
 void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isReleased) {
