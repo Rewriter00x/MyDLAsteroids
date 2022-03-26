@@ -56,17 +56,13 @@ bool MyDLAsteroidsFramework::Tick() {
     // Could not resize sprite, so drew it a bunch of times untill it filled the screen
     drawBackground();
     
-    // Drawing character
+    // Drawing entities
     Character->drawCentered();
-    
-    // Drawing cursor
     Cursor->drawCentered();
     
-    // Character movenent
+    // Moving entities
     Character->move();
     
-    // Character speed changing
-    Character->updateSpeed();
     return false;
 }
 

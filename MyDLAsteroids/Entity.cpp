@@ -31,6 +31,7 @@ void Entity::drawCentered() {
 void Entity::move() {
     _x += _speedX + _constSpeedX;
     _y += _speedY + _constSpeedY;
+    updateSpeed();
 }
 
 void Entity::updateSpeed() {
