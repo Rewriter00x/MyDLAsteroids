@@ -5,14 +5,14 @@ class MyDLAsteroidsFramework : public Framework {
     
     static const char* Title;
     
-    const int MaxSpeedX = 10;
-    const int MaxSpeedY = 10;
+    const float MaxSpeed = 5.0f;
+    const float CharacterSpeed = 0.05f;
     
     int ScreenWidth;
     int ScreenHeight;
     
-    int CharacterSpeedX = 0;
-    int CharacterSpeedY = 0;
+    float CharacterSpeedX = 0;
+    float CharacterSpeedY = 0;
     
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;
@@ -21,12 +21,15 @@ class MyDLAsteroidsFramework : public Framework {
     int MouseSpriteWidth;
     int MouseSpriteHeight;
     
-    int CharacterX;
-    int CharacterY;
+    float CharacterX;
+    float CharacterY;
     int MouseX;
     int MouseY;
     
-    int KeyPressed = 0;
+    bool LeftKeyPressed = false;
+    bool RightKeyPressed = false;
+    bool UpKeyPressed = false;
+    bool DownKeyPressed = false;
     
     Sprite* BackgroundSprite;
     Sprite* CharacterSprite;

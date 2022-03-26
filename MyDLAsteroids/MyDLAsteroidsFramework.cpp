@@ -62,9 +62,55 @@ bool MyDLAsteroidsFramework::Tick() {
     // Drawing cursor
     drawSprite(MouseSprite, MouseX - MouseSpriteWidth / 2, MouseY - MouseSpriteHeight / 2);
     
+    // Character movenent
     CharacterX += CharacterSpeedX;
     CharacterY += CharacterSpeedY;
     
+    // Character speed changing
+    if (LeftKeyPressed) {
+        if (abs(CharacterSpeedX) < MaxSpeed)
+            CharacterSpeedX += -CharacterSpeed;
+    }
+    else {
+        if (CharacterSpeedX < 0) {
+            CharacterSpeedX -= -CharacterSpeed;
+            if (CharacterSpeedX > 0)
+                CharacterSpeedX = 0;
+        }
+    }
+    if (RightKeyPressed) {
+        if (abs(CharacterSpeedX) < MaxSpeed)
+            CharacterSpeedX += CharacterSpeed;
+    }
+    else {
+        if (CharacterSpeedX > 0) {
+            CharacterSpeedX -= CharacterSpeed;
+            if (CharacterSpeedX < 0)
+                CharacterSpeedX = 0;
+        }
+    }
+    if (UpKeyPressed) {
+        if (abs(CharacterSpeedY) < MaxSpeed)
+            CharacterSpeedY += -CharacterSpeed;
+    }
+    else {
+        if (CharacterSpeedY < 0) {
+            CharacterSpeedY -= -CharacterSpeed;
+            if (CharacterSpeedY > 0)
+                CharacterSpeedY = 0;
+        }
+    }
+    if (DownKeyPressed) {
+        if (abs(CharacterSpeedY) < MaxSpeed)
+            CharacterSpeedY += CharacterSpeed;
+    }
+    else {
+        if (CharacterSpeedY > 0) {
+            CharacterSpeedY -= CharacterSpeed;
+            if (CharacterSpeedY < 0)
+                CharacterSpeedY = 0;
+        }
+    }
     return false;
 }
 
@@ -80,16 +126,16 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
 void MyDLAsteroidsFramework::onKeyPressed(FRKey k) {
     switch (k) {
         case FRKey::LEFT:
-            CharacterSpeedX += -10;
+            LeftKeyPressed = true;
             break;
         case FRKey::RIGHT:
-            CharacterSpeedX += 10;
+            RightKeyPressed = true;
             break;
         case FRKey::UP:
-            CharacterSpeedY += -10;
+            UpKeyPressed = true;
             break;
         case FRKey::DOWN:
-            CharacterSpeedY += 10;
+            DownKeyPressed = true;
             break;
     }
 }
@@ -97,16 +143,16 @@ void MyDLAsteroidsFramework::onKeyPressed(FRKey k) {
 void MyDLAsteroidsFramework::onKeyReleased(FRKey k) {
     switch (k) {
         case FRKey::LEFT:
-            CharacterSpeedX += 10;
+            LeftKeyPressed = false;
             break;
         case FRKey::RIGHT:
-            CharacterSpeedX += -10;
+            RightKeyPressed = false;
             break;
         case FRKey::UP:
-            CharacterSpeedY += 10;
+            UpKeyPressed = false;
             break;
         case FRKey::DOWN:
-            CharacterSpeedY += -10;
+            DownKeyPressed = false;
             break;
     }
 }
