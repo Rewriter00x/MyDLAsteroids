@@ -46,8 +46,8 @@ class MyDLAsteroidsFramework : public Framework {
     int ScreenWidth;
     int ScreenHeight;
     
-    float CharacterSpeedX = 0;
-    float CharacterSpeedY = 0;
+    float CharacterSpeedX = 0.0f;
+    float CharacterSpeedY = 0.0f;
     
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;
