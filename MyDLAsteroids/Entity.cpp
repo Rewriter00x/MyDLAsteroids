@@ -20,6 +20,49 @@ Entity::~Entity() {
     destroySprite(_sprite);
 }
 
+void Entity::updateSpeed() {
+    if (Entity::shootingManager[FRKey::LEFT]) {
+        if (abs(_speedX) < maxSpeed + _constSpeedX)
+            _speedX += -speedStep;
+    }
+    else {
+        if (_speedX < _constSpeedX) {
+            _speedX -= -speedStep;
+            _speedX = _speedX > _constSpeedX ? _constSpeedX : _speedX;
+        }
+    }
+    if (Entity::shootingManager[FRKey::RIGHT]) {
+        if (abs(_speedX) < maxSpeed + _constSpeedX)
+            _speedX += speedStep;
+    }
+    else {
+        if (_speedX > _constSpeedX) {
+            _speedX -= speedStep;
+            _speedX = _speedX < _constSpeedX ? _constSpeedX : _speedX;
+        }
+    }
+    if (Entity::shootingManager[FRKey::UP]) {
+        if (abs(_speedY) < maxSpeed + _constSpeedY)
+            _speedY += -speedStep;
+    }
+    else {
+        if (_speedY < _constSpeedY) {
+            _speedY -= -speedStep;
+            _speedY = _speedY > _constSpeedY ? _constSpeedY : _speedY;
+        }
+    }
+    if (Entity::shootingManager[FRKey::DOWN]) {
+        if (abs(_speedY) < maxSpeed + _constSpeedY)
+            _speedY += speedStep;
+    }
+    else {
+        if (_speedY > _constSpeedY) {
+            _speedY -= speedStep;
+            _speedY = _speedY < _constSpeedY ? _constSpeedY : _speedY;
+        }
+    }
+}
+
 void Entity::draw() {
     drawSprite(_sprite, _x, _y);
 }
@@ -32,51 +75,4 @@ void Entity::move() {
     _x += _speedX + _constSpeedX;
     _y += _speedY + _constSpeedY;
     updateSpeed();
-}
-
-void Entity::updateSpeed() {
-    if (Entity::shootingManager[FRKey::LEFT]) {
-        if (abs(_speedX) < maxSpeed + _constSpeedX)
-            _speedX += -speedStep;
-    }
-    else {
-        if (_speedX < _constSpeedX) {
-            _speedX -= -speedStep;
-            if (_speedX > _constSpeedX)
-                _speedX = _constSpeedX;
-        }
-    }
-    if (Entity::shootingManager[FRKey::RIGHT]) {
-        if (abs(_speedX) < maxSpeed + _constSpeedX)
-            _speedX += speedStep;
-    }
-    else {
-        if (_speedX > _constSpeedX) {
-            _speedX -= speedStep;
-            if (_speedX < _constSpeedX)
-                _speedX = _constSpeedX;
-        }
-    }
-    if (Entity::shootingManager[FRKey::UP]) {
-        if (abs(_speedY) < maxSpeed + _constSpeedY)
-            _speedY += -speedStep;
-    }
-    else {
-        if (_speedY < _constSpeedY) {
-            _speedY -= -speedStep;
-            if (_speedY > _constSpeedY)
-                _speedY = _constSpeedY;
-        }
-    }
-    if (Entity::shootingManager[FRKey::DOWN]) {
-        if (abs(_speedY) < maxSpeed + _constSpeedY)
-            _speedY += speedStep;
-    }
-    else {
-        if (_speedY > _constSpeedY) {
-            _speedY -= speedStep;
-            if (_speedY < _constSpeedY)
-                _speedY = _constSpeedY;
-        }
-    }
 }

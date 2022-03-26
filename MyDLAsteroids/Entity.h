@@ -54,10 +54,13 @@ public:
     
     ~Entity();
     
+protected:
+    void updateSpeed();
+    
+public:
     void draw();
     void drawCentered();
     void move();
-    void updateSpeed();
     Sprite* sprite() { return _sprite; }
     float& x() { return _x; }
     float& y() { return _y; }
