@@ -61,11 +61,12 @@ public:
     void draw();
     void drawCentered();
     void move();
+    bool colides(const Entity& e);
     Sprite* sprite() { return _sprite; }
     float& x() { return _x; }
     float& y() { return _y; }
     float& speedX() { return _speedX; }
     float& speedY() { return _speedY; }
-    int& width() { return _width; }
-    int& height() { return _height; }
+    int width() { return _width; }
+    int height() { return _height; }
 };
