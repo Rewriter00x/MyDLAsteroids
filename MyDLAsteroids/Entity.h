@@ -61,6 +61,7 @@ public:
     void draw();
     void drawCentered();
     void move();
+    void moveReverse();
     bool colides(const Entity& e);
     Sprite* sprite() { return _sprite; }
     float& x() { return _x; }

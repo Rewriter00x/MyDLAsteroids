@@ -102,3 +102,8 @@ void MyDLAsteroidsFramework::moveEntity(Entity* e) {
     e->move();
     inRange(e);
 }
+
+void MyDLAsteroidsFramework::moveEntityReverse(Entity* e) {
+    e->moveReverse();
+    inRange(e);
+}
