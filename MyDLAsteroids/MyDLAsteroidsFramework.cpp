@@ -4,16 +4,14 @@
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
 void MyDLAsteroidsFramework::drawBackground() {
-    int bgWidth, bgHeight;
-    getSpriteSize(BackgroundSprite, bgWidth, bgHeight);
     int curWidth, curHeight;
     curWidth = curHeight = 0;
     while (curHeight < ScreenHeight) {
         while (curWidth < ScreenWidth) {
             drawSprite(BackgroundSprite, curWidth, curHeight);
-            curWidth+=bgWidth;
+            curWidth+=BackgroundSpriteWidth;
         }
-        curHeight+=bgHeight;
+        curHeight+=BackgroundSpriteHeight;
         curWidth = 0;
     }
 }
