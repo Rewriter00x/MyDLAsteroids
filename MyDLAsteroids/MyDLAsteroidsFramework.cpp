@@ -37,8 +37,8 @@ bool MyDLAsteroidsFramework::Init() {
     if (!(BackgroundSprite && Character->sprite() && Cursor->sprite()))
         return false;
     
-    Character->x() = ScreenWidth / 2;
-    Character->y() = ScreenHeight / 2;
+    Character->x() = (ScreenWidth - Character->width()) / 2;
+    Character->y() = (ScreenHeight - Character->height()) / 2;
     
     return true;
 }
@@ -57,11 +57,11 @@ bool MyDLAsteroidsFramework::Tick() {
     drawBackground();
     
     // Drawing entities
-    Character->drawCentered();
+    Character->draw();
     Cursor->drawCentered();
     
     // Moving entities
-    Character->move();
+    moveEntity(Character);
     
     return false;
 }
@@ -85,4 +85,20 @@ void MyDLAsteroidsFramework::onKeyReleased(FRKey k) {
 
 const char* MyDLAsteroidsFramework::GetTitle() {
     return Title;
+}
+
+void MyDLAsteroidsFramework::inRange(Entity* e) {
+    if (e->x() < -e->width())
+        e->x() += e->width() + ScreenWidth;
+    else if (e->x() > ScreenWidth)
+        e->x() -= e->width() + ScreenWidth;
+    if (e->y() < -e->height())
+        e->y() += e->height() + ScreenHeight;
+    else if (e->y() > ScreenHeight)
+        e->y() -= e->height() + ScreenHeight;
+}
+
+void MyDLAsteroidsFramework::moveEntity(Entity* e) {
+    e->move();
+    inRange(e);
 }

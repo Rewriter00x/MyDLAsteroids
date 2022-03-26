@@ -40,5 +40,9 @@ public:
     virtual void onKeyReleased(FRKey k) override;
 
     virtual const char* GetTitle() override;
+    
+    void inRange(Entity* e);
+    
+    void moveEntity(Entity* e);
 
 };
