@@ -38,6 +38,9 @@ bool MyDLAsteroidsFramework::Init() {
     if (!(BackgroundSprite && CharacterSprite))
         return false;
     
+    CharacterX = ScreenWidth / 2;
+    CharacterY = ScreenHeight / 2;
+    
     return true;
 }
 
@@ -51,7 +54,7 @@ bool MyDLAsteroidsFramework::Tick() {
     drawBackground();
     
     // Drawing character
-    drawSprite(CharacterSprite, (ScreenWidth - CharacterSpriteWidth) / 2, (ScreenHeight - CharacterSpriteHeight) / 2);
+    drawSprite(CharacterSprite, CharacterX - CharacterSpriteWidth / 2, CharacterY - CharacterSpriteHeight / 2);
     
     // Drawing cursor
     drawSprite(MouseSprite, MouseX - MouseSpriteWidth / 2, MouseY - MouseSpriteHeight / 2);

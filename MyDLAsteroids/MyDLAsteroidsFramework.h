@@ -13,6 +13,8 @@ class MyDLAsteroidsFramework : public Framework {
     int MouseSpriteWidth;
     int MouseSpriteHeight;
     
+    int CharacterX;
+    int CharacterY;
     int MouseX;
     int MouseY;
     
