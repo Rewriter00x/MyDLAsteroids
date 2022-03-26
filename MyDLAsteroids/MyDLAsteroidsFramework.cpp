@@ -64,6 +64,9 @@ bool MyDLAsteroidsFramework::Tick() {
     // Drawing cursor
     drawSprite(MouseSprite, MouseX - MouseSpriteWidth / 2, MouseY - MouseSpriteHeight / 2);
     
+    CharacterX += CharacterSpeedX;
+    CharacterY += CharacterSpeedY;
+    
     return false;
 }
 
@@ -77,11 +80,37 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
 }
 
 void MyDLAsteroidsFramework::onKeyPressed(FRKey k) {
-    
+    switch (k) {
+        case FRKey::LEFT:
+            CharacterSpeedX += -10;
+            break;
+        case FRKey::RIGHT:
+            CharacterSpeedX += 10;
+            break;
+        case FRKey::UP:
+            CharacterSpeedY += -10;
+            break;
+        case FRKey::DOWN:
+            CharacterSpeedY += 10;
+            break;
+    }
 }
 
 void MyDLAsteroidsFramework::onKeyReleased(FRKey k) {
-    
+    switch (k) {
+        case FRKey::LEFT:
+            CharacterSpeedX += 10;
+            break;
+        case FRKey::RIGHT:
+            CharacterSpeedX += -10;
+            break;
+        case FRKey::UP:
+            CharacterSpeedY += 10;
+            break;
+        case FRKey::DOWN:
+            CharacterSpeedY += -10;
+            break;
+    }
 }
 
 const char* MyDLAsteroidsFramework::GetTitle() {
