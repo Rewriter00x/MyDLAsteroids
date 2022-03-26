@@ -87,3 +87,8 @@ bool Entity::colides(const Entity& e) {
     return _x < e._x + e._width && _x + _width > e._x
         && _y < e._y + e._height && _y + _height > e._y;
 }
+
+void Entity::setSprite(Sprite* s) {
+    _sprite = s;
+    getSpriteSize(s, _width, _height);
+}

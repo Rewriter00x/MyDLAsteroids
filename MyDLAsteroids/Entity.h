@@ -63,7 +63,8 @@ public:
     void move();
     void moveReverse();
     bool colides(const Entity& e);
-    Sprite* sprite() { return _sprite; }
+    void setSprite(Sprite* s);
+    Sprite* const getSprite() { return _sprite; }
     float& x() { return _x; }
     float& y() { return _y; }
     float& speedX() { return _speedX; }
