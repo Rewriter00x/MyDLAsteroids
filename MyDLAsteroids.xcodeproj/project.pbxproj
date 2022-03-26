@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E2E340327EFAE0C009EA244 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E2E340227EFAE0C009EA244 /* Entity.cpp */; };
 		6E6C0D6827EF0ACE00E0D9E1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E6C0D6727EF0ACE00E0D9E1 /* main.cpp */; };
 		6E6C0D7E27EF0B4600E0D9E1 /* libFrameworkRelease.0.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E6C0D7C27EF0B1500E0D9E1 /* libFrameworkRelease.0.0.1.dylib */; };
 		6EA45C3727EF129800C66E00 /* MyDLAsteroidsFramework.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA45C3627EF129800C66E00 /* MyDLAsteroidsFramework.cpp */; };
@@ -26,6 +27,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6E2E340127EFAE0C009EA244 /* Entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
+		6E2E340227EFAE0C009EA244 /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		6E6C0D6427EF0ACE00E0D9E1 /* MyDLAsteroids */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MyDLAsteroids; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E6C0D6727EF0ACE00E0D9E1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		6E6C0D6F27EF0B1400E0D9E1 /* bullet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bullet.png; sourceTree = "<group>"; };
@@ -84,6 +87,8 @@
 				6EA45C3627EF129800C66E00 /* MyDLAsteroidsFramework.cpp */,
 				6EA45C3827EF2A3000C66E00 /* MyFramework.h */,
 				6EA45C3927EF2A3000C66E00 /* MyFramework.cpp */,
+				6E2E340127EFAE0C009EA244 /* Entity.h */,
+				6E2E340227EFAE0C009EA244 /* Entity.cpp */,
 			);
 			path = MyDLAsteroids;
 			sourceTree = "<group>";
@@ -193,6 +198,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E2E340327EFAE0C009EA244 /* Entity.cpp in Sources */,
 				6E6C0D6827EF0ACE00E0D9E1 /* main.cpp in Sources */,
 				6EA45C3727EF129800C66E00 /* MyDLAsteroidsFramework.cpp in Sources */,
 				6EA45C3A27EF2A3000C66E00 /* MyFramework.cpp in Sources */,

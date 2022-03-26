@@ -1,5 +1,6 @@
 #include "MyDLAsteroidsFramework.h"
-#include <iostream>
+#include "Entity.h"
+#include <cmath>
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
@@ -28,18 +29,17 @@ bool MyDLAsteroidsFramework::Init() {
     showCursor(false);
     
     BackgroundSprite = createSprite("data/background.png");
-    CharacterSprite = createSprite("data/spaceship.png");
+    Character = new Entity(createSprite("data/spaceship.png"));
     MouseSprite = createSprite("data/circle.tga");
     
     getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
-    getSpriteSize(CharacterSprite, CharacterSpriteWidth, CharacterSpriteHeight);
     getSpriteSize(MouseSprite, MouseSpriteWidth, MouseSpriteHeight);
     
-    if (!(BackgroundSprite && CharacterSprite))
+    if (!(BackgroundSprite && Character->sprite()))
         return false;
     
-    CharacterX = ScreenWidth / 2;
-    CharacterY = ScreenHeight / 2;
+    Character->x() = ScreenWidth / 2;
+    Character->y() = ScreenHeight / 2;
     
     return true;
 }
@@ -47,7 +47,8 @@ bool MyDLAsteroidsFramework::Init() {
 void MyDLAsteroidsFramework::Close() {
     // Removes all background plates
     destroySprite(BackgroundSprite);
-    destroySprite(CharacterSprite);
+    
+    delete Character;
     destroySprite(MouseSprite);
 }
 
@@ -57,60 +58,16 @@ bool MyDLAsteroidsFramework::Tick() {
     drawBackground();
     
     // Drawing character
-    drawSprite(CharacterSprite, CharacterX - CharacterSpriteWidth / 2, CharacterY - CharacterSpriteHeight / 2);
+    Character->drawCentered();
     
     // Drawing cursor
     drawSprite(MouseSprite, MouseX - MouseSpriteWidth / 2, MouseY - MouseSpriteHeight / 2);
     
     // Character movenent
-    CharacterX += CharacterSpeedX;
-    CharacterY += CharacterSpeedY;
+    Character->move();
     
     // Character speed changing
-    if (ShootingManager[FRKey::LEFT]) {
-        if (abs(CharacterSpeedX) < MaxSpeed)
-            CharacterSpeedX += -CharacterSpeed;
-    }
-    else {
-        if (CharacterSpeedX < 0) {
-            CharacterSpeedX -= -CharacterSpeed;
-            if (CharacterSpeedX > 0)
-                CharacterSpeedX = 0;
-        }
-    }
-    if (ShootingManager[FRKey::RIGHT]) {
-        if (abs(CharacterSpeedX) < MaxSpeed)
-            CharacterSpeedX += CharacterSpeed;
-    }
-    else {
-        if (CharacterSpeedX > 0) {
-            CharacterSpeedX -= CharacterSpeed;
-            if (CharacterSpeedX < 0)
-                CharacterSpeedX = 0;
-        }
-    }
-    if (ShootingManager[FRKey::UP]) {
-        if (abs(CharacterSpeedY) < MaxSpeed)
-            CharacterSpeedY += -CharacterSpeed;
-    }
-    else {
-        if (CharacterSpeedY < 0) {
-            CharacterSpeedY -= -CharacterSpeed;
-            if (CharacterSpeedY > 0)
-                CharacterSpeedY = 0;
-        }
-    }
-    if (ShootingManager[FRKey::DOWN]) {
-        if (abs(CharacterSpeedY) < MaxSpeed)
-            CharacterSpeedY += CharacterSpeed;
-    }
-    else {
-        if (CharacterSpeedY > 0) {
-            CharacterSpeedY -= CharacterSpeed;
-            if (CharacterSpeedY < 0)
-                CharacterSpeedY = 0;
-        }
-    }
+    Character->updateSpeed();
     return false;
 }
 
@@ -124,11 +81,11 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
 }
 
 void MyDLAsteroidsFramework::onKeyPressed(FRKey k) {
-    ShootingManager[k] = true;
+    Entity::shootingManager[k] = true;
 }
 
 void MyDLAsteroidsFramework::onKeyReleased(FRKey k) {
-    ShootingManager[k] = false;
+    Entity::shootingManager[k] = false;
 }
 
 const char* MyDLAsteroidsFramework::GetTitle() {

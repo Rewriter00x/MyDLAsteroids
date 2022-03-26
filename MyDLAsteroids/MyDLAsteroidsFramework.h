@@ -1,69 +1,27 @@
 #pragma once
 #include "Framework.h"
 
-// Singleton instance for controlling shooting direction
-struct ShootingDirectionManager {
-    bool& operator[](FRKey k) {
-        switch (k) {
-            case FRKey::LEFT:
-                return LeftKeyPressed;
-            case FRKey::RIGHT:
-                return RightKeyPressed;
-            case FRKey::UP:
-                return UpKeyPressed;
-            case FRKey::DOWN:
-                return DownKeyPressed;
-            default:
-                throw k;
-        }
-    }
-    
-    static ShootingDirectionManager& Instance() {
-        static ShootingDirectionManager Instance;
-        return Instance;
-    }
-    
-private:
-    ShootingDirectionManager() {}
-    ShootingDirectionManager(const ShootingDirectionManager&) = delete;
-    ShootingDirectionManager& operator=(const ShootingDirectionManager&) = delete;
-    
-    bool LeftKeyPressed = false;
-    bool RightKeyPressed = false;
-    bool UpKeyPressed = false;
-    bool DownKeyPressed = false;
-};
+class Entity;
 
 class MyDLAsteroidsFramework : public Framework {
     
     static const char* Title;
     
-    ShootingDirectionManager& ShootingManager = ShootingDirectionManager::Instance();
-    
-    const float MaxSpeed = 5.0f;
-    const float CharacterSpeed = 0.05f;
-    
     int ScreenWidth;
     int ScreenHeight;
     
-    float CharacterSpeedX = 0.0f;
-    float CharacterSpeedY = 0.0f;
-    
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;
-    int CharacterSpriteWidth;
-    int CharacterSpriteHeight;
     int MouseSpriteWidth;
     int MouseSpriteHeight;
     
-    float CharacterX;
-    float CharacterY;
     int MouseX;
     int MouseY;
     
     Sprite* BackgroundSprite;
-    Sprite* CharacterSprite;
     Sprite* MouseSprite;
+    
+    Entity* Character;
     
 protected:
     void drawBackground();
