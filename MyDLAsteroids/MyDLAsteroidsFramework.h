@@ -12,16 +12,11 @@ class MyDLAsteroidsFramework : public Framework {
     
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;
-    int MouseSpriteWidth;
-    int MouseSpriteHeight;
-    
-    int MouseX;
-    int MouseY;
     
     Sprite* BackgroundSprite;
-    Sprite* MouseSprite;
     
     Entity* Character;
+    Entity* Cursor;
     
 protected:
     void drawBackground();

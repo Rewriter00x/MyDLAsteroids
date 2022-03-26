@@ -30,10 +30,9 @@ bool MyDLAsteroidsFramework::Init() {
     
     BackgroundSprite = createSprite("data/background.png");
     Character = new Entity(createSprite("data/spaceship.png"));
-    MouseSprite = createSprite("data/circle.tga");
+    Cursor = new Entity(createSprite("data/circle.tga"));
     
     getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
-    getSpriteSize(MouseSprite, MouseSpriteWidth, MouseSpriteHeight);
     
     if (!(BackgroundSprite && Character->sprite()))
         return false;
@@ -49,7 +48,7 @@ void MyDLAsteroidsFramework::Close() {
     destroySprite(BackgroundSprite);
     
     delete Character;
-    destroySprite(MouseSprite);
+    delete Cursor;
 }
 
 bool MyDLAsteroidsFramework::Tick() {
@@ -61,7 +60,7 @@ bool MyDLAsteroidsFramework::Tick() {
     Character->drawCentered();
     
     // Drawing cursor
-    drawSprite(MouseSprite, MouseX - MouseSpriteWidth / 2, MouseY - MouseSpriteHeight / 2);
+    Cursor->drawCentered();
     
     // Character movenent
     Character->move();
@@ -72,8 +71,8 @@ bool MyDLAsteroidsFramework::Tick() {
 }
 
 void MyDLAsteroidsFramework::onMouseMove(int x, int y, int xrelative, int yrelative) {
-    MouseX = x;
-    MouseY = y;
+    Cursor->x() = x;
+    Cursor->y() = y;
 }
 
 void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isReleased) {
