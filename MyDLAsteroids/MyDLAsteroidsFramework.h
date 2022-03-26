@@ -6,7 +6,13 @@ class MyDLAsteroidsFramework : public Framework {
     int ScreenWidth;
     int ScreenHeight;
     
+    int BackgroundSpriteWidth;
+    int BackgroundSpriteHeight;
+    int CharacterSpriteWidth;
+    int CharacterSpriteHeight;
+    
     Sprite* BackgroundSprite;
+    Sprite* CharacterSprite;
     
 protected:
     void drawBackground();

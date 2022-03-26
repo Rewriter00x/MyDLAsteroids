@@ -26,8 +26,12 @@ bool MyDLAsteroidsFramework::Init() {
     getScreenSize(ScreenWidth, ScreenHeight);
     
     BackgroundSprite = createSprite("data/background.png");
+    CharacterSprite = createSprite("data/spaceship.png");
     
-    if (!BackgroundSprite)
+    getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
+    getSpriteSize(CharacterSprite, CharacterSpriteWidth, CharacterSpriteHeight);
+    
+    if (!(BackgroundSprite && CharacterSprite))
         return false;
     
     return true;
@@ -41,6 +45,9 @@ bool MyDLAsteroidsFramework::Tick() {
     // Wanted to draw background one time, but framework does not seem to have suck feature, so I'm drawing it every frame
     // Could not resize sprite, so drew it a bunch of times untill it filled the screen
     drawBackground();
+    
+    // Drawing character
+    drawSprite(CharacterSprite, (ScreenWidth - CharacterSpriteWidth) / 2, (ScreenHeight - CharacterSpriteHeight) / 2);
     
     return false;
 }
