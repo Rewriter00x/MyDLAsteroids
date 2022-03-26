@@ -3,6 +3,8 @@
 
 class MyDLAsteroidsFramework : public Framework {
     
+    static const char* Title;
+    
     int ScreenWidth;
     int ScreenHeight;
     

@@ -1,6 +1,8 @@
 #include "MyDLAsteroidsFramework.h"
 #include <iostream>
 
+const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
+
 void MyDLAsteroidsFramework::drawBackground() {
     int bgWidth, bgHeight;
     getSpriteSize(BackgroundSprite, bgWidth, bgHeight);
@@ -80,5 +82,5 @@ void MyDLAsteroidsFramework::onKeyReleased(FRKey k) {
 }
 
 const char* MyDLAsteroidsFramework::GetTitle() {
-    return "MyDLAsteroids";
+    return Title;
 }
