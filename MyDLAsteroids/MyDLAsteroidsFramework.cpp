@@ -34,7 +34,7 @@ bool MyDLAsteroidsFramework::Init() {
     
     getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
     
-    if (!(BackgroundSprite && Character->sprite()))
+    if (!(BackgroundSprite && Character->sprite() && Cursor->sprite()))
         return false;
     
     Character->x() = ScreenWidth / 2;
