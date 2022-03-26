@@ -1,7 +1,7 @@
 #pragma once
 #include "Framework.h"
 
-// Singleton (originally intended to be) instance for controlling shooting direction
+// Singleton instance for controlling shooting direction
 struct ShootingDirectionManager {
     bool& operator[](FRKey k) {
         switch (k) {
@@ -17,11 +17,16 @@ struct ShootingDirectionManager {
                 throw k;
         }
     }
-    ShootingDirectionManager() {}
+    
+    static ShootingDirectionManager& Instance() {
+        static ShootingDirectionManager Instance;
+        return Instance;
+    }
     
 private:
-    // ShootingDirectionManager(const ShootingDirectionManager&) = delete;
-    // ShootingDirectionManager& operator=(const ShootingDirectionManager&) = delete;
+    ShootingDirectionManager() {}
+    ShootingDirectionManager(const ShootingDirectionManager&) = delete;
+    ShootingDirectionManager& operator=(const ShootingDirectionManager&) = delete;
     
     bool LeftKeyPressed = false;
     bool RightKeyPressed = false;
@@ -33,7 +38,7 @@ class MyDLAsteroidsFramework : public Framework {
     
     static const char* Title;
     
-    ShootingDirectionManager ShootingManager;
+    ShootingDirectionManager& ShootingManager = ShootingDirectionManager::Instance();
     
     const float MaxSpeed = 5.0f;
     const float CharacterSpeed = 0.05f;

@@ -41,8 +41,6 @@ bool MyDLAsteroidsFramework::Init() {
     CharacterX = ScreenWidth / 2;
     CharacterY = ScreenHeight / 2;
     
-    ShootingManager = ShootingDirectionManager();
-    
     return true;
 }
 
