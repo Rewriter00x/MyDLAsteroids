@@ -41,6 +41,8 @@ bool MyDLAsteroidsFramework::Init() {
     CharacterX = ScreenWidth / 2;
     CharacterY = ScreenHeight / 2;
     
+    ShootingManager = ShootingDirectionManager();
+    
     return true;
 }
 
@@ -67,7 +69,7 @@ bool MyDLAsteroidsFramework::Tick() {
     CharacterY += CharacterSpeedY;
     
     // Character speed changing
-    if (LeftKeyPressed) {
+    if (ShootingManager[FRKey::LEFT]) {
         if (abs(CharacterSpeedX) < MaxSpeed)
             CharacterSpeedX += -CharacterSpeed;
     }
@@ -78,7 +80,7 @@ bool MyDLAsteroidsFramework::Tick() {
                 CharacterSpeedX = 0;
         }
     }
-    if (RightKeyPressed) {
+    if (ShootingManager[FRKey::RIGHT]) {
         if (abs(CharacterSpeedX) < MaxSpeed)
             CharacterSpeedX += CharacterSpeed;
     }
@@ -89,7 +91,7 @@ bool MyDLAsteroidsFramework::Tick() {
                 CharacterSpeedX = 0;
         }
     }
-    if (UpKeyPressed) {
+    if (ShootingManager[FRKey::UP]) {
         if (abs(CharacterSpeedY) < MaxSpeed)
             CharacterSpeedY += -CharacterSpeed;
     }
@@ -100,7 +102,7 @@ bool MyDLAsteroidsFramework::Tick() {
                 CharacterSpeedY = 0;
         }
     }
-    if (DownKeyPressed) {
+    if (ShootingManager[FRKey::DOWN]) {
         if (abs(CharacterSpeedY) < MaxSpeed)
             CharacterSpeedY += CharacterSpeed;
     }
@@ -124,37 +126,11 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
 }
 
 void MyDLAsteroidsFramework::onKeyPressed(FRKey k) {
-    switch (k) {
-        case FRKey::LEFT:
-            LeftKeyPressed = true;
-            break;
-        case FRKey::RIGHT:
-            RightKeyPressed = true;
-            break;
-        case FRKey::UP:
-            UpKeyPressed = true;
-            break;
-        case FRKey::DOWN:
-            DownKeyPressed = true;
-            break;
-    }
+    ShootingManager[k] = true;
 }
 
 void MyDLAsteroidsFramework::onKeyReleased(FRKey k) {
-    switch (k) {
-        case FRKey::LEFT:
-            LeftKeyPressed = false;
-            break;
-        case FRKey::RIGHT:
-            RightKeyPressed = false;
-            break;
-        case FRKey::UP:
-            UpKeyPressed = false;
-            break;
-        case FRKey::DOWN:
-            DownKeyPressed = false;
-            break;
-    }
+    ShootingManager[k] = false;
 }
 
 const char* MyDLAsteroidsFramework::GetTitle() {

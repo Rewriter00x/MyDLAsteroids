@@ -1,9 +1,39 @@
 #pragma once
 #include "Framework.h"
 
+// Singleton (originally intended to be) instance for controlling shooting direction
+struct ShootingDirectionManager {
+    bool& operator[](FRKey k) {
+        switch (k) {
+            case FRKey::LEFT:
+                return LeftKeyPressed;
+            case FRKey::RIGHT:
+                return RightKeyPressed;
+            case FRKey::UP:
+                return UpKeyPressed;
+            case FRKey::DOWN:
+                return DownKeyPressed;
+            default:
+                throw k;
+        }
+    }
+    ShootingDirectionManager() {}
+    
+private:
+    // ShootingDirectionManager(const ShootingDirectionManager&) = delete;
+    // ShootingDirectionManager& operator=(const ShootingDirectionManager&) = delete;
+    
+    bool LeftKeyPressed = false;
+    bool RightKeyPressed = false;
+    bool UpKeyPressed = false;
+    bool DownKeyPressed = false;
+};
+
 class MyDLAsteroidsFramework : public Framework {
     
     static const char* Title;
+    
+    ShootingDirectionManager ShootingManager;
     
     const float MaxSpeed = 5.0f;
     const float CharacterSpeed = 0.05f;
@@ -25,11 +55,6 @@ class MyDLAsteroidsFramework : public Framework {
     float CharacterY;
     int MouseX;
     int MouseY;
-    
-    bool LeftKeyPressed = false;
-    bool RightKeyPressed = false;
-    bool UpKeyPressed = false;
-    bool DownKeyPressed = false;
     
     Sprite* BackgroundSprite;
     Sprite* CharacterSprite;
