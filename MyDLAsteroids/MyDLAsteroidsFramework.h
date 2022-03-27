@@ -10,7 +10,7 @@ class MyDLAsteroidsFramework : public Framework {
     static const int Grid = 4;
     
     static const char* Title;
-    static const int EnemyNumber = 5;
+    static const int EnemyNumber = 50;
     
     int ScreenWidth;
     int ScreenHeight;
