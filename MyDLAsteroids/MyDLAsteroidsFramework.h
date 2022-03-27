@@ -7,7 +7,7 @@ class Entity;
 class MyDLAsteroidsFramework : public Framework {
     
     static const char* Title;
-    constexpr static const int EnemyNumber = 100;
+    static const int EnemyNumber = 50;
     
     int ScreenWidth;
     int ScreenHeight;

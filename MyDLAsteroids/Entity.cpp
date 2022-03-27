@@ -27,44 +27,44 @@ Entity::~Entity() {
 }
 
 void Entity::updateSpeed() {
-    if (Entity::shootingManager[FRKey::LEFT]) {
-        if (abs(_speedX) < maxSpeed + _constSpeedX)
+    if (shootingManager[FRKey::LEFT]) {
+        if (_speedX > -maxSpeed)
             _speedX += -speedStep;
     }
     else {
-        if (_speedX < _constSpeedX) {
+        if (_speedX < 0.0f) {
             _speedX -= -speedStep;
-            _speedX = _speedX > _constSpeedX ? _constSpeedX : _speedX;
+            _speedX = _speedX > 0.0f ? 0.0f : _speedX;
         }
     }
-    if (Entity::shootingManager[FRKey::RIGHT]) {
-        if (abs(_speedX) < maxSpeed + _constSpeedX)
+    if (shootingManager[FRKey::RIGHT]) {
+        if (_speedX < maxSpeed)
             _speedX += speedStep;
     }
     else {
-        if (_speedX > _constSpeedX) {
+        if (_speedX > 0.0f) {
             _speedX -= speedStep;
-            _speedX = _speedX < _constSpeedX ? _constSpeedX : _speedX;
+            _speedX = _speedX < 0.0f ? 0.0f : _speedX;
         }
     }
-    if (Entity::shootingManager[FRKey::UP]) {
-        if (abs(_speedY) < maxSpeed + _constSpeedY)
+    if (shootingManager[FRKey::UP]) {
+        if (_speedY > -maxSpeed)
             _speedY += -speedStep;
     }
     else {
-        if (_speedY < _constSpeedY) {
+        if (_speedY < 0.0f) {
             _speedY -= -speedStep;
-            _speedY = _speedY > _constSpeedY ? _constSpeedY : _speedY;
+            _speedY = _speedY > 0.0f ? 0.0f : _speedY;
         }
     }
-    if (Entity::shootingManager[FRKey::DOWN]) {
-        if (abs(_speedY) < maxSpeed + _constSpeedY)
+    if (shootingManager[FRKey::DOWN]) {
+        if (_speedY < maxSpeed)
             _speedY += speedStep;
     }
     else {
-        if (_speedY > _constSpeedY) {
+        if (_speedY > 0.0f) {
             _speedY -= speedStep;
-            _speedY = _speedY < _constSpeedY ? _constSpeedY : _speedY;
+            _speedY = _speedY < 0.0f ? 0.0f : _speedY;
         }
     }
 }

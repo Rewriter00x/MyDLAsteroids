@@ -104,11 +104,11 @@ bool MyDLAsteroidsFramework::Init() {
 void MyDLAsteroidsFramework::Close() {
     // Removes all background plates
     destroySprite(BackgroundSprite);
+    destroySprite(bigEnemySprite);
+    destroySprite(smallEnemySprite);
     
     delete Character;
     delete Cursor;
-    destroySprite(bigEnemySprite);
-    destroySprite(smallEnemySprite);
 }
 
 bool MyDLAsteroidsFramework::Tick() {
