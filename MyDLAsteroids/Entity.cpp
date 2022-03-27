@@ -3,6 +3,10 @@
 
 const float Entity::speedStep = 0.05f;
 const float Entity::maxSpeed = 5.0f;
+
+float Entity::speedX = 0.0f;
+float Entity::speedY = 0.0f;
+
 ShootingDirectionManager& Entity::shootingManager = ShootingDirectionManager::Instance();
 
 Entity::Entity(Sprite* s) : _sprite(s), _constSpeedX(0.0f), _constSpeedY(0.0f) {
@@ -28,43 +32,43 @@ Entity::~Entity() {
 
 void Entity::updateSpeed() {
     if (shootingManager[FRKey::LEFT]) {
-        if (_speedX > -maxSpeed)
-            _speedX += -speedStep;
+        if (speedX > -maxSpeed)
+            speedX += -speedStep;
     }
     else {
-        if (_speedX < 0.0f) {
-            _speedX -= -speedStep;
-            _speedX = _speedX > 0.0f ? 0.0f : _speedX;
+        if (speedX < 0.0f) {
+            speedX -= -speedStep;
+            speedX = speedX > 0.0f ? 0.0f : speedX;
         }
     }
     if (shootingManager[FRKey::RIGHT]) {
-        if (_speedX < maxSpeed)
-            _speedX += speedStep;
+        if (speedX < maxSpeed)
+            speedX += speedStep;
     }
     else {
-        if (_speedX > 0.0f) {
-            _speedX -= speedStep;
-            _speedX = _speedX < 0.0f ? 0.0f : _speedX;
+        if (speedX > 0.0f) {
+            speedX -= speedStep;
+            speedX = speedX < 0.0f ? 0.0f : speedX;
         }
     }
     if (shootingManager[FRKey::UP]) {
-        if (_speedY > -maxSpeed)
-            _speedY += -speedStep;
+        if (speedY > -maxSpeed)
+            speedY += -speedStep;
     }
     else {
-        if (_speedY < 0.0f) {
-            _speedY -= -speedStep;
-            _speedY = _speedY > 0.0f ? 0.0f : _speedY;
+        if (speedY < 0.0f) {
+            speedY -= -speedStep;
+            speedY = speedY > 0.0f ? 0.0f : speedY;
         }
     }
     if (shootingManager[FRKey::DOWN]) {
-        if (_speedY < maxSpeed)
-            _speedY += speedStep;
+        if (speedY < maxSpeed)
+            speedY += speedStep;
     }
     else {
-        if (_speedY > 0.0f) {
-            _speedY -= speedStep;
-            _speedY = _speedY < 0.0f ? 0.0f : _speedY;
+        if (speedY > 0.0f) {
+            speedY -= speedStep;
+            speedY = speedY < 0.0f ? 0.0f : speedY;
         }
     }
 }
@@ -78,15 +82,13 @@ void Entity::drawCentered() const {
 }
 
 void Entity::move() {
-    _x += _speedX + _constSpeedX;
-    _y += _speedY + _constSpeedY;
-    updateSpeed();
+    _x += speedX + _constSpeedX;
+    _y += speedY + _constSpeedY;
 }
 
 void Entity::moveReverse() {
-    _x -= _speedX + _constSpeedX;
-    _y -= _speedY + _constSpeedY;
-    updateSpeed();
+    _x -= speedX + _constSpeedX;
+    _y -= speedY + _constSpeedY;
 }
 
 bool Entity::colides(const Entity& e) const {
