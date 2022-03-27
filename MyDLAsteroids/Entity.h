@@ -50,8 +50,6 @@ public:
 public:
     Entity(Sprite* s);
     
-    Entity(Sprite* s, float constSpeedX, float constSpeedY);
-    
     Entity(Sprite* s, float constSpeedX, float constSpeedY, float x, float y);
     
     ~Entity();

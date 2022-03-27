@@ -14,12 +14,6 @@ Entity::Entity(Sprite* s) : _sprite(s), _constSpeedX(0.0f), _constSpeedY(0.0f) {
         getSpriteSize(s, _width, _height);
 }
 
-Entity::Entity(Sprite* s, float constSpeedX, float constSpeedY)
-    : _sprite(s), _constSpeedX(constSpeedX), _constSpeedY(constSpeedY), _x(0.0f), _y(0.0f) {
-    if (s)
-        getSpriteSize(s, _width, _height);
-}
-
 Entity::Entity(Sprite* s, float constSpeedX, float constSpeedY, float x, float y)
     : _sprite(s), _constSpeedX(constSpeedX), _constSpeedY(constSpeedY), _x(x), _y(y) {
     if (s)
