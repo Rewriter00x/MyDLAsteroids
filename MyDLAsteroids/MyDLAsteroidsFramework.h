@@ -8,6 +8,7 @@ class Entity;
 class MyDLAsteroidsFramework : public Framework {
     
     static const int Grid = 4;
+    static const int Threshold = 100;
     
     static const char* Title;
     static const int EnemyNumber = 50;
