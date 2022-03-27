@@ -15,7 +15,7 @@ class MyDLAsteroidsFramework : public Framework {
     
     Sprite* BackgroundSprite;
     
-    Entity* Character;
+    const Entity* Character;
     Entity* Cursor;
     
 protected:
@@ -44,5 +44,7 @@ public:
     void inRange(Entity* e);
     
     void moveEntity(Entity* e);
+    
+    void moveEntityReverse(Entity* e);
 
 };

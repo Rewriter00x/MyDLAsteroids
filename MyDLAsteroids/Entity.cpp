@@ -11,7 +11,13 @@ Entity::Entity(Sprite* s) : _sprite(s), _constSpeedX(0.0f), _constSpeedY(0.0f) {
 }
 
 Entity::Entity(Sprite* s, float constSpeedX, float constSpeedY)
-    : _sprite(s), _constSpeedX(constSpeedX), _constSpeedY(constSpeedY) {
+    : _sprite(s), _constSpeedX(constSpeedX), _constSpeedY(constSpeedY), _x(0.0f), _y(0.0f) {
+    if (s)
+        getSpriteSize(s, _width, _height);
+}
+
+Entity::Entity(Sprite* s, float constSpeedX, float constSpeedY, float x, float y)
+    : _sprite(s), _constSpeedX(constSpeedX), _constSpeedY(constSpeedY), _x(x), _y(y) {
     if (s)
         getSpriteSize(s, _width, _height);
 }
@@ -63,11 +69,11 @@ void Entity::updateSpeed() {
     }
 }
 
-void Entity::draw() {
+void Entity::draw() const {
     drawSprite(_sprite, _x, _y);
 }
 
-void Entity::drawCentered() {
+void Entity::drawCentered() const {
     drawSprite(_sprite, _x - _width / 2, _y - _height / 2);
 }
 
@@ -83,9 +89,14 @@ void Entity::moveReverse() {
     updateSpeed();
 }
 
-bool Entity::colides(const Entity& e) {
+bool Entity::colides(const Entity& e) const {
     return _x < e._x + e._width && _x + _width > e._x
         && _y < e._y + e._height && _y + _height > e._y;
+}
+
+bool Entity::colides(float x, float y, int width, int height) const {
+    return _x < x + width && _x + _width > x
+        && _y < y + height && _y + _height > y;
 }
 
 void Entity::setSprite(Sprite* s) {

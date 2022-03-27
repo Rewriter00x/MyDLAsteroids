@@ -29,16 +29,19 @@ bool MyDLAsteroidsFramework::Init() {
     showCursor(false);
     
     BackgroundSprite = createSprite("data/background.png");
-    Character = new Entity(createSprite("data/spaceship.png"));
+    
+    Sprite* characterSprite = createSprite("data/spaceship.png");
+    int characterWidth, characterHeight;
+    getSpriteSize(characterSprite, characterWidth, characterHeight);
+    Character = new Entity(characterSprite, 0.0f, 0.0f,
+        (ScreenWidth - characterWidth) / 2, (ScreenHeight - characterHeight) / 2);
+    
     Cursor = new Entity(createSprite("data/circle.tga"));
     
     getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
     
     if (!(BackgroundSprite && Character->getSprite() && Cursor->getSprite()))
         return false;
-    
-    Character->x() = (ScreenWidth - Character->width()) / 2;
-    Character->y() = (ScreenHeight - Character->height()) / 2;
     
     return true;
 }
@@ -61,7 +64,7 @@ bool MyDLAsteroidsFramework::Tick() {
     Cursor->drawCentered();
     
     // Moving entities
-    moveEntity(Character);
+    // moveEntity(Character);
     
     return false;
 }

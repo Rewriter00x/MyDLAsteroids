@@ -52,23 +52,30 @@ public:
     
     Entity(Sprite* s, float constSpeedX, float constSpeedY);
     
+    Entity(Sprite* s, float constSpeedX, float constSpeedY, float x, float y);
+    
     ~Entity();
     
 protected:
     void updateSpeed();
     
 public:
-    void draw();
-    void drawCentered();
+    void draw() const;
+    void drawCentered() const;
     void move();
     void moveReverse();
-    bool colides(const Entity& e);
+    bool colides(const Entity& e) const;
+    bool colides(float x, float y, int width, int height) const;
     void setSprite(Sprite* s);
-    Sprite* const getSprite() { return _sprite; }
+    Sprite* const getSprite() const { return _sprite; }
     float& x() { return _x; }
     float& y() { return _y; }
+    const float& x() const { return _x; }
+    const float& y() const { return _y; }
     float& speedX() { return _speedX; }
     float& speedY() { return _speedY; }
-    int width() { return _width; }
-    int height() { return _height; }
+    const float& speedX() const { return _speedX; }
+    const float& speedY() const { return _speedY; }
+    int width() const { return _width; }
+    int height() const { return _height; }
 };
