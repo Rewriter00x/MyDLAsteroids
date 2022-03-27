@@ -24,10 +24,10 @@ void MyDLAsteroidsFramework::zone() {
 
     // Zone all enemies
     for (Entity* enemy : Enemies) {
-        int x1 = enemy->x() < 0 || enemy->x() > ScreenWidth ? 0 : (int)enemy->x() / row;
-        int x2 = enemy->x() < 0 || enemy->x() > ScreenWidth ? 0 : (int)(enemy->x() + enemy->width()) / row;
-        int y1 = enemy->y() < 0 || enemy->x() > ScreenHeight ? 0 : (int)enemy->y() / col;
-        int y2 = enemy->y() < 0 || enemy->x() > ScreenHeight ? 0 : (int)(enemy->y() + enemy->height()) / col;
+        int x1 = enemy->x() < 0 || enemy->x() + enemy->width() > ScreenWidth ? 0 : (int)enemy->x() / row;
+        int x2 = enemy->x() < 0 || enemy->x() + enemy->width() > ScreenWidth ? 0 : (int)(enemy->x() + enemy->width()) / row;
+        int y1 = enemy->y() < 0 || enemy->y() + enemy->height() > ScreenHeight ? 0 : (int)enemy->y() / col;
+        int y2 = enemy->y() < 0 || enemy->y() + enemy->height() > ScreenHeight ? 0 : (int)(enemy->y() + enemy->height()) / col;
         int x1y1 = y1 * Grid + x1;
         int x2y1 = y1 * Grid + x2;
         int x1y2 = y2 * Grid + x1;
@@ -49,6 +49,10 @@ void MyDLAsteroidsFramework::zone() {
             Zones[i].push_back(Character);
 }
 
+void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
+    
+}
+
 void MyDLAsteroidsFramework::checkColisions() {
     zone();
 
@@ -56,7 +60,7 @@ void MyDLAsteroidsFramework::checkColisions() {
         for (int i = 0; i < Zones[z].size(); i++) {
             for (int j = i + 1; j < Zones[z].size(); j++) {
                 if (Zones[z][i]->collides(*Zones[z][j])) {
-                    // Action about collision here
+                    collided(Zones[z][i], Zones[z][j]);
                 }
             }
         }

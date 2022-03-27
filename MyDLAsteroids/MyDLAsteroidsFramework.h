@@ -22,16 +22,18 @@ class MyDLAsteroidsFramework : public Framework {
     Sprite* bigEnemySprite;
     Sprite* smallEnemySprite;
     
-    const Entity* Character;
+    Entity* Character;
     Entity* Cursor;
     
     std::array<Entity*, EnemyNumber> Enemies;
-    std::vector<const Entity*> Zones[Grid * Grid];
+    std::vector<Entity*> Zones[Grid * Grid];
     
 protected:
     void inRange(Entity* e);
     
     void zone();
+    
+    void collided(Entity* e1, Entity* e2);
     
     void checkColisions();
     
