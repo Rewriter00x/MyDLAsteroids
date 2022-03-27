@@ -49,15 +49,26 @@ void MyDLAsteroidsFramework::fillEnemies() {
 }
 
 void MyDLAsteroidsFramework::drawBackground() {
-    int curWidth, curHeight;
-    curWidth = curHeight = 0;
-    while (curHeight < ScreenHeight) {
-        while (curWidth < ScreenWidth) {
-            drawSprite(BackgroundSprite, curWidth, curHeight);
-            curWidth+=BackgroundSpriteWidth;
+    static float deltaX = 0.0f;
+    static float deltaY = 0.0f;
+    deltaX += Entity::speedX;
+    deltaY += Entity::speedY;
+    
+    if (deltaX > BackgroundSpriteWidth)
+        deltaX -= BackgroundSpriteWidth;
+    else if (deltaX < -BackgroundSpriteWidth)
+        deltaX += BackgroundSpriteWidth;
+    if (deltaY > BackgroundSpriteHeight)
+        deltaY -= BackgroundSpriteHeight;
+    else if (deltaY < -BackgroundSpriteHeight)
+        deltaY += BackgroundSpriteHeight;
+    
+    for (int j = -1; j < ScreenHeight / BackgroundSpriteHeight + 2; j++) {
+        for (int i = -1; i < ScreenWidth / BackgroundSpriteWidth + 2; i++) {
+            drawSprite(BackgroundSprite,
+                BackgroundSpriteWidth * i - deltaX - 3 * (i + 1),
+                BackgroundSpriteHeight * j - deltaY - 3 * (j + 1));
         }
-        curHeight+=BackgroundSpriteHeight;
-        curWidth = 0;
     }
 }
 
@@ -102,7 +113,7 @@ bool MyDLAsteroidsFramework::Init() {
 }
 
 void MyDLAsteroidsFramework::Close() {
-    // Removes all background plates
+    // Removes all entities with these sprites
     destroySprite(BackgroundSprite);
     destroySprite(bigEnemySprite);
     destroySprite(smallEnemySprite);
@@ -112,19 +123,17 @@ void MyDLAsteroidsFramework::Close() {
 }
 
 bool MyDLAsteroidsFramework::Tick() {
-    // Wanted to draw background one time, but framework does not seem to have suck feature, so I'm drawing it every frame
-    // Could not resize sprite, so drew it a bunch of times untill it filled the screen
     drawBackground();
     
     // Drawing entities
     Character->draw();
     Cursor->drawCentered();
-    
     drawEnemies();
     
     // Moving entities
-    // moveEntity(Character);
     moveEnemies();
+    
+    Entity::updateSpeed();
     
     return false;
 }
