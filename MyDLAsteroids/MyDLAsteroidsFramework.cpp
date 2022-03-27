@@ -4,6 +4,47 @@
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
+void MyDLAsteroidsFramework::inRange(Entity* e) {
+    if (e->x() < -e->width())
+        e->x() += e->width() + ScreenWidth;
+    else if (e->x() > ScreenWidth)
+        e->x() -= e->width() + ScreenWidth;
+    if (e->y() < -e->height())
+        e->y() += e->height() + ScreenHeight;
+    else if (e->y() > ScreenHeight)
+        e->y() -= e->height() + ScreenHeight;
+}
+
+void MyDLAsteroidsFramework::moveEntity(Entity* e) {
+    e->move();
+    inRange(e);
+}
+
+void MyDLAsteroidsFramework::moveEntityReverse(Entity* e) {
+    e->moveReverse();
+    inRange(e);
+}
+
+void MyDLAsteroidsFramework::moveEnemies() {
+    for (Entity*& enemy : Enemies)
+        moveEntityReverse(enemy);
+}
+
+void MyDLAsteroidsFramework::fillEnemies() {
+    for (Entity*& enemy : Enemies) {
+        bool isBig = rand() % 2;
+        int x, y, width, height;
+        do {
+            x = rand() % ScreenWidth;
+            y = rand() % ScreenHeight;
+            getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, width, height);
+        } while (Character->colides(x, y, width, height));
+        enemy = new Entity(isBig ? bigEnemySprite : smallEnemySprite,
+            (float)(rand() % (int)(Entity::maxSpeed / 10 * 100)) / 100,
+            (float)(rand() % (int)(Entity::maxSpeed / 10 * 100)) / 100, x, y);
+    }
+}
+
 void MyDLAsteroidsFramework::drawBackground() {
     int curWidth, curHeight;
     curWidth = curHeight = 0;
@@ -15,6 +56,11 @@ void MyDLAsteroidsFramework::drawBackground() {
         curHeight+=BackgroundSpriteHeight;
         curWidth = 0;
     }
+}
+
+void MyDLAsteroidsFramework::drawEnemies() {
+    for (Entity*& enemy : Enemies)
+        enemy->draw();
 }
 
 void MyDLAsteroidsFramework::PreInit(int& width, int& height, bool& fullscreen) {
@@ -38,10 +84,16 @@ bool MyDLAsteroidsFramework::Init() {
     
     Cursor = new Entity(createSprite("data/circle.tga"));
     
+    bigEnemySprite = createSprite("data/big_asteroid.png");
+    smallEnemySprite = createSprite("data/small_asteroid.png");
+    
     getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
     
-    if (!(BackgroundSprite && Character->getSprite() && Cursor->getSprite()))
+    if (!(BackgroundSprite && Character->getSprite() && Cursor->getSprite())
+        && bigEnemySprite && smallEnemySprite)
         return false;
+    
+    fillEnemies();
     
     return true;
 }
@@ -52,6 +104,8 @@ void MyDLAsteroidsFramework::Close() {
     
     delete Character;
     delete Cursor;
+    destroySprite(bigEnemySprite);
+    destroySprite(smallEnemySprite);
 }
 
 bool MyDLAsteroidsFramework::Tick() {
@@ -63,8 +117,11 @@ bool MyDLAsteroidsFramework::Tick() {
     Character->draw();
     Cursor->drawCentered();
     
+    drawEnemies();
+    
     // Moving entities
     // moveEntity(Character);
+    moveEnemies();
     
     return false;
 }
@@ -88,25 +145,4 @@ void MyDLAsteroidsFramework::onKeyReleased(FRKey k) {
 
 const char* MyDLAsteroidsFramework::GetTitle() {
     return Title;
-}
-
-void MyDLAsteroidsFramework::inRange(Entity* e) {
-    if (e->x() < -e->width())
-        e->x() += e->width() + ScreenWidth;
-    else if (e->x() > ScreenWidth)
-        e->x() -= e->width() + ScreenWidth;
-    if (e->y() < -e->height())
-        e->y() += e->height() + ScreenHeight;
-    else if (e->y() > ScreenHeight)
-        e->y() -= e->height() + ScreenHeight;
-}
-
-void MyDLAsteroidsFramework::moveEntity(Entity* e) {
-    e->move();
-    inRange(e);
-}
-
-void MyDLAsteroidsFramework::moveEntityReverse(Entity* e) {
-    e->moveReverse();
-    inRange(e);
 }

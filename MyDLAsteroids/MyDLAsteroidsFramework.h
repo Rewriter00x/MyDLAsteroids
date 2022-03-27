@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include "Framework.h"
 
 class Entity;
@@ -6,6 +7,7 @@ class Entity;
 class MyDLAsteroidsFramework : public Framework {
     
     static const char* Title;
+    constexpr static const int EnemyNumber = 100;
     
     int ScreenWidth;
     int ScreenHeight;
@@ -14,12 +16,28 @@ class MyDLAsteroidsFramework : public Framework {
     int BackgroundSpriteHeight;
     
     Sprite* BackgroundSprite;
+    Sprite* bigEnemySprite;
+    Sprite* smallEnemySprite;
     
     const Entity* Character;
     Entity* Cursor;
     
+    std::array<Entity*, EnemyNumber> Enemies;
+    
 protected:
+    void inRange(Entity* e);
+    
+    void moveEntity(Entity* e);
+    
+    void moveEntityReverse(Entity* e);
+    
+    void moveEnemies();
+    
+    void fillEnemies();
+    
     void drawBackground();
+    
+    void drawEnemies();
 
 public:
 
@@ -40,11 +58,5 @@ public:
     virtual void onKeyReleased(FRKey k) override;
 
     virtual const char* GetTitle() override;
-    
-    void inRange(Entity* e);
-    
-    void moveEntity(Entity* e);
-    
-    void moveEntityReverse(Entity* e);
 
 };
