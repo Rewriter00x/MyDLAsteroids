@@ -91,12 +91,12 @@ void Entity::moveReverse() {
     _y -= speedY + _constSpeedY;
 }
 
-bool Entity::colides(const Entity& e) const {
+bool Entity::collides(const Entity& e) const {
     return _x < e._x + e._width && _x + _width > e._x
         && _y < e._y + e._height && _y + _height > e._y;
 }
 
-bool Entity::colides(float x, float y, int width, int height) const {
+bool Entity::collides(float x, float y, int width, int height) const {
     return _x < x + width && _x + _width > x
         && _y < y + height && _y + _height > y;
 }

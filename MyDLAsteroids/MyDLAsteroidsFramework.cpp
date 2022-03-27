@@ -1,7 +1,6 @@
 #include <cmath>
 #include "MyDLAsteroidsFramework.h"
 #include "Entity.h"
-#include <iostream>
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
@@ -18,18 +17,17 @@ void MyDLAsteroidsFramework::inRange(Entity* e) {
 
 void MyDLAsteroidsFramework::zone() {
     for (int i = 0; i < Grid * Grid; i++)
-        while (!Zones[i].empty())
-            Zones[i].erase(Zones[i].begin());
+        Zones[i].clear();
 
     static int row = ScreenWidth / Grid;
     static int col = ScreenHeight / Grid;
 
     // Zone all enemies
     for (Entity* enemy : Enemies) {
-        int x1 = (int)enemy->x() / row;
-        int x2 = (int)(enemy->x() + enemy->width()) / row;
-        int y1 = (int)enemy->y() / col;
-        int y2 = (int)(enemy->y() + enemy->height()) / col;
+        int x1 = enemy->x() < 0 || enemy->x() > ScreenWidth ? 0 : (int)enemy->x() / row;
+        int x2 = enemy->x() < 0 || enemy->x() > ScreenWidth ? 0 : (int)(enemy->x() + enemy->width()) / row;
+        int y1 = enemy->y() < 0 || enemy->x() > ScreenHeight ? 0 : (int)enemy->y() / col;
+        int y2 = enemy->y() < 0 || enemy->x() > ScreenHeight ? 0 : (int)(enemy->y() + enemy->height()) / col;
         int x1y1 = y1 * Grid + x1;
         int x2y1 = y1 * Grid + x2;
         int x1y2 = y2 * Grid + x1;
@@ -57,19 +55,12 @@ void MyDLAsteroidsFramework::checkColisions() {
     for (int z = 0; z < Grid * Grid; z++) {
         for (int i = 0; i < Zones[z].size(); i++) {
             for (int j = i + 1; j < Zones[z].size(); j++) {
-                if (Zones[z][i]->colides(*Zones[z][j])) {
-                    std::cout << "Colision\n" << Zones[z][i]->x() << " " << Zones[z][i]->y() << "\n" << Zones[z][j]->x() << " " << Zones[z][j]->y() << std::endl;
+                if (Zones[z][i]->collides(*Zones[z][j])) {
+                    // Action about collision here
                 }
             }
         }
     }
-//    for (int i = 0; i < Enemies.size(); i++) {
-//        for (int j = i + 1; j < Enemies.size(); j++) {
-//            if (Enemies[i]->colides(*Enemies[j])) {
-//                std::cout << "Colision\n" << Enemies[i]->x() << " " << Enemies[i]->y() << "\n" << Enemies[j]->x() << " " << Enemies[j]->y() << std::endl;
-//            }
-//        }
-//    }
 }
 
 void MyDLAsteroidsFramework::moveEntity(Entity* e) {
@@ -95,7 +86,7 @@ void MyDLAsteroidsFramework::fillEnemies() {
             x = rand() % ScreenWidth;
             y = rand() % ScreenHeight;
             getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, width, height);
-        } while (Character->colides(x, y, width, height));
+        } while (Character->collides(x, y, width, height));
         float constSpeedX = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         constSpeedX = rand() % 2 ? constSpeedX : -constSpeedX;

@@ -62,8 +62,8 @@ public:
     void drawCentered() const;
     void move();
     void moveReverse();
-    bool colides(const Entity& e) const;
-    bool colides(float x, float y, int width, int height) const;
+    bool collides(const Entity& e) const;
+    bool collides(float x, float y, int width, int height) const;
     void setSprite(Sprite* s);
     Sprite* const getSprite() const { return _sprite; }
     float& x() { return _x; }
