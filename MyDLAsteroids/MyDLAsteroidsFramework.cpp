@@ -1,6 +1,7 @@
 #include <cmath>
 #include "MyDLAsteroidsFramework.h"
 #include "Entity.h"
+#include <iostream>
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
@@ -13,6 +14,62 @@ void MyDLAsteroidsFramework::inRange(Entity* e) {
         e->y() += e->height() + ScreenHeight;
     else if (e->y() > ScreenHeight)
         e->y() -= e->height() + ScreenHeight;
+}
+
+//void MyDLAsteroidsFramework::zone() {
+//    for (int i = 0; i < Grid * Grid; i++)
+//        Zones[i].clear();
+//
+//    static int row = ScreenWidth / Grid;
+//    static int col = ScreenHeight / Grid;
+//
+//    // Zone all enemies
+//    for (Entity* enemy : Enemies) {
+//        int x1 = (int)enemy->x() / row;
+//        int x2 = (int)(enemy->x() + enemy->width()) / row;
+//        int y1 = (int)enemy->y() / col;
+//        int y2 = (int)(enemy->y() + enemy->height()) / col;
+//        int x1y1 = y1 * Grid + x1;
+//        int x2y1 = y1 * Grid + x2;
+//        int x1y2 = y2 * Grid + x1;
+//        for (int j = x1y1; j <= x1y2; j += Grid)
+//            for (int i = j; i <= j + (x2y1 - x1y1); i++)
+//                Zones[i].emplace_back(enemy);
+//    }
+//
+//    // Zone characters
+//    static int x1 = (int)Character->x() / row;
+//    static int x2 = (int)(Character->x() + Character->width()) / row;
+//    static int y1 = (int)Character->y() / col;
+//    static int y2 = (int)(Character->y() + Character->height()) / col;
+//    static int x1y1 = y1 * Grid + x1;
+//    static int x2y1 = y1 * Grid + x2;
+//    static int x1y2 = y2 * Grid + x1;
+//    for (int j = x1y1; j <= x1y2; j += Grid)
+//        for (int i = j; i <= j + (x2y1 - x1y1); i++)
+//            Zones[i].emplace_back(Character);
+//    std::cout << "----ZONED----\n";
+//}
+
+void MyDLAsteroidsFramework::checkColisions() {
+//    zone();
+//
+//    for (int z = 0; z < Grid * Grid; z++) {
+//        for (int i = 0; i < Zones[z].size() - 1; i++) {
+//            for (int j = i + 1; j < Zones[z].size(); j++) {
+//                if (Zones[z][i]->colides(*Zones[z][j])) {
+//                    std::cout << "Colision\n" << Zones[z][i]->x() << " " << Zones[z][i]->y() << "\n" << Zones[z][j]->x() << " " << Zones[z][j]->y() << std::endl;
+//                }
+//            }
+//        }
+//    }
+    for (int i = 0; i < Enemies.size() - 1; i++) {
+        for (int j = i + 1; j < Enemies.size(); j++) {
+            if (Enemies[i]->colides(*Enemies[j])) {
+                std::cout << "Colision\n" << Enemies[i]->x() << " " << Enemies[i]->y() << "\n" << Enemies[j]->x() << " " << Enemies[j]->y() << std::endl;
+            }
+        }
+    }
 }
 
 void MyDLAsteroidsFramework::moveEntity(Entity* e) {
@@ -124,6 +181,8 @@ void MyDLAsteroidsFramework::Close() {
 
 bool MyDLAsteroidsFramework::Tick() {
     drawBackground();
+    
+    checkColisions();
     
     // Drawing entities
     Character->draw();

@@ -1,13 +1,16 @@
 #pragma once
 #include <array>
+#include <vector>
 #include "Framework.h"
 
 class Entity;
 
 class MyDLAsteroidsFramework : public Framework {
     
+    static const int Grid = 4;
+    
     static const char* Title;
-    static const int EnemyNumber = 50;
+    static const int EnemyNumber = 5;
     
     int ScreenWidth;
     int ScreenHeight;
@@ -23,9 +26,14 @@ class MyDLAsteroidsFramework : public Framework {
     Entity* Cursor;
     
     std::array<Entity*, EnemyNumber> Enemies;
+    std::vector<const Entity*> Zones[Grid * Grid];
     
 protected:
     void inRange(Entity* e);
+    
+    void zone();
+    
+    void checkColisions();
     
     void moveEntity(Entity* e);
     
