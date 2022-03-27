@@ -1,5 +1,5 @@
-#include "Entity.h"
 #include <cmath>
+#include "Entity.h"
 
 const float Entity::speedStep = 0.05f;
 const float Entity::maxSpeed = 5.0f;

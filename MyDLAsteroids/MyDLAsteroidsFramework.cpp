@@ -1,6 +1,6 @@
+#include <cmath>
 #include "MyDLAsteroidsFramework.h"
 #include "Entity.h"
-#include <cmath>
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
