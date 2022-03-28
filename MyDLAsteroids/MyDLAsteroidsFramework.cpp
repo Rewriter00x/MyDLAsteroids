@@ -162,7 +162,7 @@ void MyDLAsteroidsFramework::fillEnemies() {
             getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, width, height);
         } while (Character->collides(x - Threshold, y - Threshold,
             width + Threshold * 2, height + Threshold * 2)
-            && newColides(x, y, width, height));
+            || newColides(x, y, width, height));
         float constSpeedX = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         constSpeedX = rand() % 2 ? constSpeedX : -constSpeedX;
