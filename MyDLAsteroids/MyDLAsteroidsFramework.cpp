@@ -15,6 +15,13 @@ void MyDLAsteroidsFramework::inRange(Entity* e) {
         e->y() -= e->height() + MapHeight;
 }
 
+void MyDLAsteroidsFramework::checkZoneCollision(int z) {
+    for (int i = 0; i < Zones[z].size() == 0 ? 0 : Zones[z].size() - 1; i++)
+        for (int j = i + 1; j < Zones[z].size(); j++)
+            if (Zones[z][i]->collides(*Zones[z][j]))
+                collided(Zones[z][i], Zones[z][j]);
+}
+
 bool MyDLAsteroidsFramework::newColides(int x, int y, int width, int height) {
     for (Entity* enemy : Enemies) {
         if (enemy->collides(x, y, width, height))
@@ -70,32 +77,32 @@ void MyDLAsteroidsFramework::flyApart(Entity* e1, Entity* e2) {
     }
 }
 
+void MyDLAsteroidsFramework::zoneEntity(Entity* e) {
+    int x1 = e->x() <= -DeltaWidth || e->x() + e->width() >= ScreenWidth + DeltaWidth ? 0 : (int)(e->x() + DeltaWidth) / GridWidth;
+    int x2 = e->x() <= -DeltaWidth || e->x() + e->width() >= ScreenWidth + DeltaWidth ? 0 : (int)(e->x() + e->width() + DeltaWidth) / GridWidth;
+    int y1 = e->y() <= -DeltaHeight || e->y() + e->height() >= ScreenHeight + DeltaHeight ? 0 : (int)(e->y() + DeltaHeight) / GridHeight;
+    int y2 = e->y() <= -DeltaHeight || e->y() + e->height() >= ScreenHeight + DeltaHeight ? 0 : (int)(e->y() + e->height() + DeltaHeight) / GridHeight;
+    int x1y1 = y1 * Grid + x1;
+    int x2y1 = y1 * Grid + x2;
+    int x1y2 = y2 * Grid + x1;
+    for (int j = x1y1; j <= x1y2; j += Grid)
+        for (int i = j; i <= j + (x2y1 - x1y1); i++)
+            Zones[i].push_back(e);
+}
+
 void MyDLAsteroidsFramework::zone() {
     for (int i = 0; i < Grid * Grid; i++)
         Zones[i].clear();
 
-    static int row = MapWidth / Grid;
-    static int col = MapHeight / Grid;
-
     // Zone all enemies
-    for (Entity* enemy : Enemies) {
-        int x1 = enemy->x() <= -DeltaWidth || enemy->x() + enemy->width() >= ScreenWidth + DeltaWidth ? 0 : (int)(enemy->x() + DeltaWidth) / row;
-        int x2 = enemy->x() <= -DeltaWidth || enemy->x() + enemy->width() >= ScreenWidth + DeltaWidth ? 0 : (int)(enemy->x() + enemy->width() + DeltaWidth) / row;
-        int y1 = enemy->y() <= -DeltaHeight || enemy->y() + enemy->height() >= ScreenHeight + DeltaHeight ? 0 : (int)(enemy->y() + DeltaHeight) / col;
-        int y2 = enemy->y() <= -DeltaHeight || enemy->y() + enemy->height() >= ScreenHeight + DeltaHeight ? 0 : (int)(enemy->y() + enemy->height() + DeltaHeight) / col;
-        int x1y1 = y1 * Grid + x1;
-        int x2y1 = y1 * Grid + x2;
-        int x1y2 = y2 * Grid + x1;
-        for (int j = x1y1; j <= x1y2; j += Grid)
-            for (int i = j; i <= j + (x2y1 - x1y1); i++)
-                Zones[i].push_back(enemy);
-    }
-
+    for (Entity* enemy : Enemies)
+        zoneEntity(enemy);
+    
     // Zone character
-    static int x1 = (int)(Character->x() + DeltaWidth) / row;
-    static int x2 = (int)(Character->x() + Character->width() + DeltaWidth) / row;
-    static int y1 = (int)(Character->y() + DeltaHeight) / col;
-    static int y2 = (int)(Character->y() + Character->height() + DeltaHeight) / col;
+    static int x1 = (int)(Character->x() + DeltaWidth) / GridWidth;
+    static int x2 = (int)(Character->x() + Character->width() + DeltaWidth) / GridWidth;
+    static int y1 = (int)(Character->y() + DeltaHeight) / GridHeight;
+    static int y2 = (int)(Character->y() + Character->height() + DeltaHeight) / GridHeight;
     static int x1y1 = y1 * Grid + x1;
     static int x2y1 = y1 * Grid + x2;
     static int x1y2 = y2 * Grid + x1;
@@ -126,15 +133,8 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
 void MyDLAsteroidsFramework::checkColisions() {
     zone();
 
-    for (int z = 0; z < Grid * Grid; z++) {
-        for (int i = 0; i < Zones[z].size() == 0 ? 0 : Zones[z].size() - 1; i++) {
-            for (int j = i + 1; j < Zones[z].size(); j++) {
-                if (Zones[z][i]->collides(*Zones[z][j])) {
-                    collided(Zones[z][i], Zones[z][j]);
-                }
-            }
-        }
-    }
+    for (int z = 0; z < Grid * Grid; z++)
+        checkZoneCollision(z);
 }
 
 void MyDLAsteroidsFramework::moveEntity(Entity* e) {

@@ -26,6 +26,9 @@ class MyDLAsteroidsFramework : public Framework {
     int DeltaWidth = (MapWidth - ScreenWidth) / 2;
     int DeltaHeight = (MapHeight - ScreenHeight) / 2;
     
+    int GridWidth = MapWidth / Grid;
+    int GridHeight = MapHeight / Grid;
+    
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;
     
@@ -44,6 +47,8 @@ class MyDLAsteroidsFramework : public Framework {
 protected:
     void inRange(Entity* e);
     
+    void checkZoneCollision(int z);
+    
     bool newColides(int x, int y, int width, int height);
     
     void sendBack(Entity* e);
@@ -51,6 +56,8 @@ protected:
     void split(Entity* e);
     
     void flyApart(Entity* e1, Entity* e2);
+    
+    void zoneEntity(Entity* e);
     
     void zone();
     
