@@ -88,8 +88,15 @@ bool Entity::collides(const Entity& e) const {
 }
 
 bool Entity::collides(float x, float y, int width, int height) const {
-    return _x < x + width && _x + _width > x
-        && _y < y + height && _y + _height > y;
+    // Rect collision, replaced with circle
+    // It is better to overlap a bit then die colliding air
+//    return _x < x + width && _x + _width > x
+//        && _y < y + height && _y + _height > y;
+    float x1 = _x + _width / 2;
+    float y1 = _y + _height / 2;
+    float x2 = x + width / 2;
+    float y2 = y + height / 2;
+    return pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow((_height + height) / 2, 2);
 }
 
 void Entity::setSprite(Sprite* s) {
