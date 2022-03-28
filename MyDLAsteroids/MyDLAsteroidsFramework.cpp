@@ -22,11 +22,30 @@ void MyDLAsteroidsFramework::checkZoneCollision(int z) {
                 collided(Zones[z][i], Zones[z][j]);
 }
 
-bool MyDLAsteroidsFramework::newColides(int x, int y, int width, int height) {
-    for (Entity* enemy : Enemies) {
+bool MyDLAsteroidsFramework::collidesWithZone(int x, int y, int width, int height, int z) {
+    for (Entity* enemy : Zones[z]) {
         if (enemy->collides(x, y, width, height))
             return true;
     }
+    return false;
+}
+
+bool MyDLAsteroidsFramework::collidesWithZone(Entity* e, int z) {
+    return collidesWithZone(e->x(), e->y(), e->width(), e->height(), z);
+}
+
+bool MyDLAsteroidsFramework::newColides(int x, int y, int width, int height) {
+    int x1 = x <= -DeltaWidth || x + width >= ScreenWidth + DeltaWidth ? 0 : (int)(x + DeltaWidth) / GridWidth;
+    int x2 = x <= -DeltaWidth || x + width >= ScreenWidth + DeltaWidth ? 0 : (int)(x + width + DeltaWidth) / GridWidth;
+    int y1 = y <= -DeltaHeight || y + height >= ScreenHeight + DeltaHeight ? 0 : (int)(y + DeltaHeight) / GridHeight;
+    int y2 = y <= -DeltaHeight || y + height >= ScreenHeight + DeltaHeight ? 0 : (int)(y + height + DeltaHeight) / GridHeight;
+    int x1y1 = y1 * Grid + x1;
+    int x2y1 = y1 * Grid + x2;
+    int x1y2 = y2 * Grid + x1;
+    for (int j = x1y1; j <= x1y2; j += Grid)
+        for (int i = j; i <= j + (x2y1 - x1y1); i++)
+            if (collidesWithZone(x, y, width, height, i))
+                return true;
     return false;
 }
 

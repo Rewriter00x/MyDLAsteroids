@@ -49,6 +49,10 @@ protected:
     
     void checkZoneCollision(int z);
     
+    bool collidesWithZone(int x, int y, int width, int height, int z);
+    
+    bool collidesWithZone(Entity* e, int z);
+    
     bool newColides(int x, int y, int width, int height);
     
     void sendBack(Entity* e);
