@@ -16,7 +16,7 @@ void MyDLAsteroidsFramework::inRange(Entity* e) {
 }
 
 bool MyDLAsteroidsFramework::newColides(int x, int y, int width, int height) {
-    for (Entity* enemy : Zones[0]) {
+    for (Entity* enemy : Enemies) {
         if (enemy->collides(x, y, width, height))
             return true;
     }
@@ -62,6 +62,12 @@ void MyDLAsteroidsFramework::flyApart(Entity* e1, Entity* e2) {
     e1->constSpeedY() = e2->constSpeedY();
     e2->constSpeedX() = speedX;
     e2->constSpeedY() = speedY;
+    while (e1->collides(*e2)) {
+        e1->x() -= e1->constSpeedX();
+        e2->x() -= e2->constSpeedX();
+        e1->y() -= e1->constSpeedY();
+        e2->y() -= e2->constSpeedY();
+    }
 }
 
 void MyDLAsteroidsFramework::zone() {
@@ -100,17 +106,17 @@ void MyDLAsteroidsFramework::zone() {
 
 void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
     // Actually, if any is character end game
-//    if (e2 == Character) {
-//        collided(e2, e1);
-//        return;
-//    }
-//    if (e1 == Character) {
-//        if (e2->getSprite() == smallEnemySprite)
-//            sendBack(e2);
-//        else
-//            split(e2);
-//        return; // DIE
-//    }
+    if (e2 == Character) {
+        collided(e2, e1);
+        return;
+    }
+    if (e1 == Character) {
+        if (e2->getSprite() == smallEnemySprite)
+            sendBack(e2);
+        else
+            split(e2);
+        return;
+    }
 //    // If isBullet and smallEnemy sendback if big split
 //    if (e1->getSprite() == smallEnemySprite)
 //        sendBack(e1);
@@ -153,7 +159,7 @@ void MyDLAsteroidsFramework::moveEnemies() {
 }
 
 void MyDLAsteroidsFramework::fillEnemies() {
-    for (Entity*& enemy : Enemies) {
+    for (int i = 0; i < EnemyNumber; i++) {
         bool isBig = rand() % 2;
         int x, y, width, height;
         do {
@@ -161,13 +167,14 @@ void MyDLAsteroidsFramework::fillEnemies() {
             y = rand() % MapHeight - deltaHeight;
             getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, width, height);
         } while (Character->collides(x - Threshold, y - Threshold,
-            width + Threshold * 2, height + Threshold * 2));
+            width + Threshold * 2, height + Threshold * 2)
+            && newColides(x, y, width, height));
         float constSpeedX = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         constSpeedX = rand() % 2 ? constSpeedX : -constSpeedX;
         constSpeedY = rand() % 2 ? constSpeedY : -constSpeedY;
-        enemy = new Entity(isBig ? bigEnemySprite : smallEnemySprite,
-            constSpeedX, constSpeedY, x, y);
+        Enemies.push_back(new Entity(isBig ? bigEnemySprite
+            : smallEnemySprite, constSpeedX, constSpeedY, x, y));
     }
 }
 
@@ -256,8 +263,8 @@ bool MyDLAsteroidsFramework::Tick() {
     
     // Drawing entities
     Character->draw();
-    Cursor->drawCentered();
     drawEnemies();
+    Cursor->drawCentered();
     
     // Moving entities
     moveEnemies();

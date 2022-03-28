@@ -84,8 +84,7 @@ void Entity::moveReverse() {
 }
 
 bool Entity::collides(const Entity& e) const {
-    return _x < e._x + e._width && _x + _width > e._x
-        && _y < e._y + e._height && _y + _height > e._y;
+    return collides(e.x(), e.y(), e.width(), e.height());
 }
 
 bool Entity::collides(float x, float y, int width, int height) const {

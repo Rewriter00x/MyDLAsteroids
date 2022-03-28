@@ -34,7 +34,7 @@ class MyDLAsteroidsFramework : public Framework {
     Entity* Character;
     Entity* Cursor;
     
-    std::array<Entity*, EnemyNumber> Enemies;
+    std::vector<Entity*> Enemies;
     std::vector<Entity*> Zones[Grid * Grid];
     
 protected:
