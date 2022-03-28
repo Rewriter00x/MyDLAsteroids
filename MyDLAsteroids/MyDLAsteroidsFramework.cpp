@@ -132,7 +132,7 @@ void MyDLAsteroidsFramework::zone() {
 
 void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
     // Actually, if any is character end game
-    if (e1 == Character || e2 == Character) {
+    if (e1 == Character || e2 == Character) { // and now equals bullet
         bPaused = true;
         bGameOver = true;
         return;
@@ -176,8 +176,8 @@ void MyDLAsteroidsFramework::fillEnemies() {
         bool isBig = rand() % 2;
         int x, y, width, height;
         do {
-            x = rand() % MapWidth - DeltaWidth;
-            y = rand() % MapHeight - DeltaHeight;
+            x = rand() % MapWidth - DeltaWidth * 2;
+            y = rand() % MapHeight - DeltaHeight * 2;
             getSpriteSize(isBig ? BigEnemySprite : SmallEnemySprite, width, height);
         } while (Character->collides(x - Threshold, y - Threshold,
             width + Threshold * 2, height + Threshold * 2)
