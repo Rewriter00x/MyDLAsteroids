@@ -13,6 +13,9 @@ class MyDLAsteroidsFramework : public Framework {
     static const char* Title;
     static const int EnemyNumber = 100;
     
+    bool bPaused = false;
+    bool bGameOver = false;
+    
     const bool bFullscreen = false;
     
     int ScreenWidth = 1024;
@@ -30,6 +33,8 @@ class MyDLAsteroidsFramework : public Framework {
     Sprite* BackgroundSprite;
     Sprite* bigEnemySprite;
     Sprite* smallEnemySprite;
+    Sprite* gameOverSprite;
+    Sprite* pauseSprite;
     
     Entity* Character;
     Entity* Cursor;

@@ -106,15 +106,9 @@ void MyDLAsteroidsFramework::zone() {
 
 void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
     // Actually, if any is character end game
-    if (e2 == Character) {
-        collided(e2, e1);
-        return;
-    }
-    if (e1 == Character) {
-        if (e2->getSprite() == smallEnemySprite)
-            sendBack(e2);
-        else
-            split(e2);
+    if (e1 == Character || e2 == Character) {
+        bPaused = true;
+        bGameOver = true;
         return;
     }
 //    // If isBullet and smallEnemy sendback if big split
@@ -233,6 +227,9 @@ bool MyDLAsteroidsFramework::Init() {
     
     Cursor = new Entity(createSprite("data/circle.tga"));
     
+    gameOverSprite = createSprite("data/game_over.png");
+    pauseSprite = createSprite("data/pause.png");
+    
     bigEnemySprite = createSprite("data/big_asteroid.png");
     smallEnemySprite = createSprite("data/small_asteroid.png");
     
@@ -250,6 +247,8 @@ bool MyDLAsteroidsFramework::Init() {
 void MyDLAsteroidsFramework::Close() {
     // Removes all entities with these sprites
     destroySprite(BackgroundSprite);
+    destroySprite(gameOverSprite);
+    destroySprite(pauseSprite);
     destroySprite(bigEnemySprite);
     destroySprite(smallEnemySprite);
     destroySprite(Character->getSprite());
@@ -257,6 +256,14 @@ void MyDLAsteroidsFramework::Close() {
 }
 
 bool MyDLAsteroidsFramework::Tick() {
+    if (bPaused) {
+        static int width, height;
+        getSpriteSize(bGameOver ? gameOverSprite : pauseSprite, width, height);
+        drawSprite(bGameOver ? gameOverSprite : pauseSprite,
+            (ScreenWidth - width) / 2, (ScreenHeight - height) / 2);
+        return false;
+    }
+    
     drawBackground();
     
     checkColisions();
@@ -280,7 +287,11 @@ void MyDLAsteroidsFramework::onMouseMove(int x, int y, int xrelative, int yrelat
 }
 
 void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isReleased) {
+    if (isReleased)
+        return;
     
+    if (button == FRMouseButton::MIDDLE && !bGameOver)
+        bPaused = !bPaused;
 }
 
 void MyDLAsteroidsFramework::onKeyPressed(FRKey k) {
