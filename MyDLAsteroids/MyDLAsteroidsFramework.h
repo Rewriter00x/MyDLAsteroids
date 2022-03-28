@@ -23,17 +23,17 @@ class MyDLAsteroidsFramework : public Framework {
     int MapWidth = ScreenWidth * 2;
     int MapHeight = ScreenHeight * 2;
     
-    int deltaWidth = (MapWidth - ScreenWidth) / 2;
-    int deltaHeight = (MapHeight - ScreenHeight) / 2;
+    int DeltaWidth = (MapWidth - ScreenWidth) / 2;
+    int DeltaHeight = (MapHeight - ScreenHeight) / 2;
     
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;
     
     Sprite* BackgroundSprite;
-    Sprite* bigEnemySprite;
-    Sprite* smallEnemySprite;
-    Sprite* gameOverSprite;
-    Sprite* pauseSprite;
+    Sprite* BigEnemySprite;
+    Sprite* SmallEnemySprite;
+    Sprite* GameOverSprite;
+    Sprite* PauseSprite;
     
     Entity* Character;
     Entity* Cursor;

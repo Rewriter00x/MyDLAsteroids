@@ -5,13 +5,13 @@
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
 void MyDLAsteroidsFramework::inRange(Entity* e) {
-    if (e->x() < -(e->width() + deltaWidth))
+    if (e->x() < -(e->width() + DeltaWidth))
         e->x() += e->width() + MapWidth;
-    else if (e->x() > ScreenWidth + deltaWidth)
+    else if (e->x() > ScreenWidth + DeltaWidth)
         e->x() -= e->width() + MapWidth;
-    if (e->y() < -(e->height() + deltaHeight))
+    if (e->y() < -(e->height() + DeltaHeight))
         e->y() += e->height() + MapHeight;
-    else if (e->y() > ScreenHeight + deltaHeight)
+    else if (e->y() > ScreenHeight + DeltaHeight)
         e->y() -= e->height() + MapHeight;
 }
 
@@ -26,19 +26,19 @@ bool MyDLAsteroidsFramework::newColides(int x, int y, int width, int height) {
 void MyDLAsteroidsFramework::sendBack(Entity* e) {
     bool isBig = rand() % 2;
     int x, y, width, height , entityWidth, entityHeight, r;
-    getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, entityWidth, entityHeight);
+    getSpriteSize(isBig ? BigEnemySprite : SmallEnemySprite, entityWidth, entityHeight);
     do {
         if (rand() % 2) {
             x = rand() % (MapWidth * 2) - MapWidth;
-            r = deltaHeight == 0 ? 0 : rand() % deltaHeight;
+            r = DeltaHeight == 0 ? 0 : rand() % DeltaHeight;
             y = rand() % 2 ? -(r + entityHeight) : ScreenHeight + r;
         }
         else {
-            r = deltaWidth == 0 ? 0 : rand() % deltaWidth;
+            r = DeltaWidth == 0 ? 0 : rand() % DeltaWidth;
             x = rand() % 2 ? -(r + entityWidth) : ScreenWidth + r;
             y = rand() % (MapHeight * 2) - MapHeight;
         }
-        getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, width, height);
+        getSpriteSize(isBig ? BigEnemySprite : SmallEnemySprite, width, height);
     } while (newColides(x, y, width, height));
     float constSpeedX = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
     float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
@@ -48,7 +48,7 @@ void MyDLAsteroidsFramework::sendBack(Entity* e) {
     e->y() = y;
     e->constSpeedX() = constSpeedX;
     e->constSpeedY() = constSpeedY;
-    e->setSprite(isBig ? bigEnemySprite : smallEnemySprite);
+    e->setSprite(isBig ? BigEnemySprite : SmallEnemySprite);
 }
 
 void MyDLAsteroidsFramework::split(Entity* e) {
@@ -79,10 +79,10 @@ void MyDLAsteroidsFramework::zone() {
 
     // Zone all enemies
     for (Entity* enemy : Enemies) {
-        int x1 = enemy->x() <= -deltaWidth || enemy->x() + enemy->width() >= ScreenWidth + deltaWidth ? 0 : (int)(enemy->x() + deltaWidth) / row;
-        int x2 = enemy->x() <= -deltaWidth || enemy->x() + enemy->width() >= ScreenWidth + deltaWidth ? 0 : (int)(enemy->x() + enemy->width() + deltaWidth) / row;
-        int y1 = enemy->y() <= -deltaHeight || enemy->y() + enemy->height() >= ScreenHeight + deltaHeight ? 0 : (int)(enemy->y() + deltaHeight) / col;
-        int y2 = enemy->y() <= -deltaHeight || enemy->y() + enemy->height() >= ScreenHeight + deltaHeight ? 0 : (int)(enemy->y() + enemy->height() + deltaHeight) / col;
+        int x1 = enemy->x() <= -DeltaWidth || enemy->x() + enemy->width() >= ScreenWidth + DeltaWidth ? 0 : (int)(enemy->x() + DeltaWidth) / row;
+        int x2 = enemy->x() <= -DeltaWidth || enemy->x() + enemy->width() >= ScreenWidth + DeltaWidth ? 0 : (int)(enemy->x() + enemy->width() + DeltaWidth) / row;
+        int y1 = enemy->y() <= -DeltaHeight || enemy->y() + enemy->height() >= ScreenHeight + DeltaHeight ? 0 : (int)(enemy->y() + DeltaHeight) / col;
+        int y2 = enemy->y() <= -DeltaHeight || enemy->y() + enemy->height() >= ScreenHeight + DeltaHeight ? 0 : (int)(enemy->y() + enemy->height() + DeltaHeight) / col;
         int x1y1 = y1 * Grid + x1;
         int x2y1 = y1 * Grid + x2;
         int x1y2 = y2 * Grid + x1;
@@ -92,10 +92,10 @@ void MyDLAsteroidsFramework::zone() {
     }
 
     // Zone character
-    static int x1 = (int)(Character->x() + deltaWidth) / row;
-    static int x2 = (int)(Character->x() + Character->width() + deltaWidth) / row;
-    static int y1 = (int)(Character->y() + deltaHeight) / col;
-    static int y2 = (int)(Character->y() + Character->height() + deltaHeight) / col;
+    static int x1 = (int)(Character->x() + DeltaWidth) / row;
+    static int x2 = (int)(Character->x() + Character->width() + DeltaWidth) / row;
+    static int y1 = (int)(Character->y() + DeltaHeight) / col;
+    static int y2 = (int)(Character->y() + Character->height() + DeltaHeight) / col;
     static int x1y1 = y1 * Grid + x1;
     static int x2y1 = y1 * Grid + x2;
     static int x1y2 = y2 * Grid + x1;
@@ -157,9 +157,9 @@ void MyDLAsteroidsFramework::fillEnemies() {
         bool isBig = rand() % 2;
         int x, y, width, height;
         do {
-            x = rand() % MapWidth - deltaWidth;
-            y = rand() % MapHeight - deltaHeight;
-            getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, width, height);
+            x = rand() % MapWidth - DeltaWidth;
+            y = rand() % MapHeight - DeltaHeight;
+            getSpriteSize(isBig ? BigEnemySprite : SmallEnemySprite, width, height);
         } while (Character->collides(x - Threshold, y - Threshold,
             width + Threshold * 2, height + Threshold * 2)
             || newColides(x, y, width, height));
@@ -167,8 +167,8 @@ void MyDLAsteroidsFramework::fillEnemies() {
         float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         constSpeedX = rand() % 2 ? constSpeedX : -constSpeedX;
         constSpeedY = rand() % 2 ? constSpeedY : -constSpeedY;
-        Enemies.push_back(new Entity(isBig ? bigEnemySprite
-            : smallEnemySprite, constSpeedX, constSpeedY, x, y));
+        Enemies.push_back(new Entity(isBig ? BigEnemySprite
+            : SmallEnemySprite, constSpeedX, constSpeedY, x, y));
     }
 }
 
@@ -227,16 +227,16 @@ bool MyDLAsteroidsFramework::Init() {
     
     Cursor = new Entity(createSprite("data/circle.tga"));
     
-    gameOverSprite = createSprite("data/game_over.png");
-    pauseSprite = createSprite("data/pause.png");
+    GameOverSprite = createSprite("data/game_over.png");
+    PauseSprite = createSprite("data/pause.png");
     
-    bigEnemySprite = createSprite("data/big_asteroid.png");
-    smallEnemySprite = createSprite("data/small_asteroid.png");
+    BigEnemySprite = createSprite("data/big_asteroid.png");
+    SmallEnemySprite = createSprite("data/small_asteroid.png");
     
     getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
     
     if (!(BackgroundSprite && Character->getSprite() && Cursor->getSprite())
-        && bigEnemySprite && smallEnemySprite)
+        && BigEnemySprite && SmallEnemySprite)
         return false;
     
     fillEnemies();
@@ -248,10 +248,10 @@ void MyDLAsteroidsFramework::Close() {
     
     // Removes all entities with these sprites
     destroySprite(BackgroundSprite);
-    destroySprite(gameOverSprite);
-    destroySprite(pauseSprite);
-    destroySprite(bigEnemySprite);
-    destroySprite(smallEnemySprite);
+    destroySprite(GameOverSprite);
+    destroySprite(PauseSprite);
+    destroySprite(BigEnemySprite);
+    destroySprite(SmallEnemySprite);
     destroySprite(Character->getSprite());
     destroySprite(Cursor->getSprite());
     
@@ -264,8 +264,8 @@ void MyDLAsteroidsFramework::Close() {
 bool MyDLAsteroidsFramework::Tick() {
     if (bPaused) {
         static int width, height;
-        getSpriteSize(bGameOver ? gameOverSprite : pauseSprite, width, height);
-        drawSprite(bGameOver ? gameOverSprite : pauseSprite,
+        getSpriteSize(bGameOver ? GameOverSprite : PauseSprite, width, height);
+        drawSprite(bGameOver ? GameOverSprite : PauseSprite,
             (ScreenWidth - width) / 2, (ScreenHeight - height) / 2);
         return false;
     }
