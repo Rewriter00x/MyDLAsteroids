@@ -11,7 +11,7 @@ class MyDLAsteroidsFramework : public Framework {
     static const int Threshold = 100;
     
     static const char* Title;
-    static const int EnemyNumber = 50;
+    static const int EnemyNumber = 5;
     
     int ScreenWidth;
     int ScreenHeight;
@@ -31,6 +31,10 @@ class MyDLAsteroidsFramework : public Framework {
     
 protected:
     void inRange(Entity* e);
+    
+    bool newColides(int x, int y, int width, int height);
+    
+    void sendBack(Entity* e);
     
     void zone();
     

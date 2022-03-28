@@ -20,9 +20,7 @@ Entity::Entity(Sprite* s, float constSpeedX, float constSpeedY, float x, float y
         getSpriteSize(s, _width, _height);
 }
 
-Entity::~Entity() {
-    destroySprite(_sprite);
-}
+Entity::~Entity() {}
 
 void Entity::updateSpeed() {
     if (shootingManager[FRKey::LEFT]) {

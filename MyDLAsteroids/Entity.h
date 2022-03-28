@@ -38,7 +38,7 @@ class Entity {
     
     Sprite* _sprite;
     float _x, _y;
-    const float _constSpeedX, _constSpeedY;
+    float _constSpeedX, _constSpeedY;
     int _width, _height;
     
 public:
@@ -60,6 +60,7 @@ public:
     void drawCentered() const;
     void move();
     void moveReverse();
+    void sendBack();
     bool collides(const Entity& e) const;
     bool collides(float x, float y, int width, int height) const;
     void setSprite(Sprite* s);
@@ -68,6 +69,10 @@ public:
     float& y() { return _y; }
     const float& x() const { return _x; }
     const float& y() const { return _y; }
+    float& constSpeedX() { return _constSpeedX; }
+    float& constSpeedY() { return _constSpeedY; }
+    const float& constSpeedX() const { return _constSpeedX; }
+    const float& constSpeedY() const { return _constSpeedY; }
     int width() const { return _width; }
     int height() const { return _height; }
 };

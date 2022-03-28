@@ -1,6 +1,7 @@
 #include <cmath>
 #include "MyDLAsteroidsFramework.h"
 #include "Entity.h"
+#include <iostream>
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
@@ -13,6 +14,35 @@ void MyDLAsteroidsFramework::inRange(Entity* e) {
         e->y() += e->height() + ScreenHeight;
     else if (e->y() > ScreenHeight)
         e->y() -= e->height() + ScreenHeight;
+}
+
+bool MyDLAsteroidsFramework::newColides(int x, int y, int width, int height) {
+    for (Entity* enemy : Zones[0]) {
+        if (enemy->collides(x, y, width, height))
+            return true;
+    }
+    return false;
+}
+
+void MyDLAsteroidsFramework::sendBack(Entity* e) {
+    bool isBig = rand() % 2;
+    int x, y, width, height , entityWidth, entityHeight;
+    getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, entityWidth, entityHeight);
+    do {
+        bool r = rand() % 2;
+        x = r ? rand() % ScreenWidth : (rand() % 2 ? -entityWidth : ScreenWidth);
+        y = r ? (rand() % 2 ? -entityHeight : ScreenHeight) : rand() % ScreenHeight;
+        getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, width, height);
+    } while (newColides(x, y, width, height));
+    float constSpeedX = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
+    float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
+    constSpeedX = rand() % 2 ? constSpeedX : -constSpeedX;
+    constSpeedY = rand() % 2 ? constSpeedY : -constSpeedY;
+    e->x() = x;
+    e->y() = y;
+    e->constSpeedX() = constSpeedX;
+    e->constSpeedY() = constSpeedY;
+    e->setSprite(isBig ? bigEnemySprite : smallEnemySprite);
 }
 
 void MyDLAsteroidsFramework::zone() {
@@ -50,14 +80,24 @@ void MyDLAsteroidsFramework::zone() {
 }
 
 void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
-    
+    // Actually, if any is character end game
+    if (e2 == Character) {
+        collided(e2, e1);
+        return;
+    }
+    if (e1 == Character) {
+        sendBack(e2);
+        return; // DIE
+    }
+    sendBack(e1);
+    sendBack(e2);
 }
 
 void MyDLAsteroidsFramework::checkColisions() {
     zone();
 
     for (int z = 0; z < Grid * Grid; z++) {
-        for (int i = 0; i < Zones[z].size(); i++) {
+        for (int i = 0; i < Zones[z].size() == 0 ? 0 : Zones[z].size() - 1; i++) {
             for (int j = i + 1; j < Zones[z].size(); j++) {
                 if (Zones[z][i]->collides(*Zones[z][j])) {
                     collided(Zones[z][i], Zones[z][j]);
@@ -170,9 +210,8 @@ void MyDLAsteroidsFramework::Close() {
     destroySprite(BackgroundSprite);
     destroySprite(bigEnemySprite);
     destroySprite(smallEnemySprite);
-    
-    delete Character;
-    delete Cursor;
+    destroySprite(Character->getSprite());
+    destroySprite(Cursor->getSprite());
 }
 
 bool MyDLAsteroidsFramework::Tick() {
