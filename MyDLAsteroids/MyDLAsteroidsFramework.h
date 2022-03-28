@@ -44,6 +44,10 @@ protected:
     
     void sendBack(Entity* e);
     
+    void split(Entity* e);
+    
+    void flyApart(Entity* e1, Entity* e2);
+    
     void zone();
     
     void collided(Entity* e1, Entity* e2);

@@ -1,7 +1,6 @@
 #include <cmath>
 #include "MyDLAsteroidsFramework.h"
 #include "Entity.h"
-#include <iostream>
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
@@ -33,13 +32,11 @@ void MyDLAsteroidsFramework::sendBack(Entity* e) {
             x = rand() % (MapWidth * 2) - MapWidth;
             r = deltaHeight == 0 ? 0 : rand() % deltaHeight;
             y = rand() % 2 ? -(r + entityHeight) : ScreenHeight + r;
-            std::cout << "a1 " << x << " " << y << std::endl;
         }
         else {
             r = deltaWidth == 0 ? 0 : rand() % deltaWidth;
             x = rand() % 2 ? -(r + entityWidth) : ScreenWidth + r;
             y = rand() % (MapHeight * 2) - MapHeight;
-            std::cout << "a2 " << x << " " << y << std::endl;
         }
         getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, width, height);
     } while (newColides(x, y, width, height));
@@ -52,6 +49,19 @@ void MyDLAsteroidsFramework::sendBack(Entity* e) {
     e->constSpeedX() = constSpeedX;
     e->constSpeedY() = constSpeedY;
     e->setSprite(isBig ? bigEnemySprite : smallEnemySprite);
+}
+
+void MyDLAsteroidsFramework::split(Entity* e) {
+    
+}
+
+void MyDLAsteroidsFramework::flyApart(Entity* e1, Entity* e2) {
+    float speedX = e1->constSpeedX();
+    float speedY = e1->constSpeedY();
+    e1->constSpeedX() = e2->constSpeedX();
+    e1->constSpeedY() = e2->constSpeedY();
+    e2->constSpeedX() = speedX;
+    e2->constSpeedY() = speedY;
 }
 
 void MyDLAsteroidsFramework::zone() {
@@ -90,16 +100,27 @@ void MyDLAsteroidsFramework::zone() {
 
 void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
     // Actually, if any is character end game
-    if (e2 == Character) {
-        collided(e2, e1);
-        return;
-    }
-    if (e1 == Character) {
-        sendBack(e2);
-        return; // DIE
-    }
-    sendBack(e1);
-    sendBack(e2);
+//    if (e2 == Character) {
+//        collided(e2, e1);
+//        return;
+//    }
+//    if (e1 == Character) {
+//        if (e2->getSprite() == smallEnemySprite)
+//            sendBack(e2);
+//        else
+//            split(e2);
+//        return; // DIE
+//    }
+//    // If isBullet and smallEnemy sendback if big split
+//    if (e1->getSprite() == smallEnemySprite)
+//        sendBack(e1);
+//    else
+//        split(e1);
+//    if (e2->getSprite() == smallEnemySprite)
+//        sendBack(e2);
+//    else
+//        split(e2);
+    flyApart(e1, e2);
 }
 
 void MyDLAsteroidsFramework::checkColisions() {
