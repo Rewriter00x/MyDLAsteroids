@@ -11,10 +11,18 @@ class MyDLAsteroidsFramework : public Framework {
     static const int Threshold = 100;
     
     static const char* Title;
-    static const int EnemyNumber = 5;
+    static const int EnemyNumber = 100;
     
-    int ScreenWidth;
-    int ScreenHeight;
+    const bool bFullscreen = false;
+    
+    int ScreenWidth = 1024;
+    int ScreenHeight = 768;
+    
+    int MapWidth = ScreenWidth * 2;
+    int MapHeight = ScreenHeight * 2;
+    
+    int deltaWidth = (MapWidth - ScreenWidth) / 2;
+    int deltaHeight = (MapHeight - ScreenHeight) / 2;
     
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;

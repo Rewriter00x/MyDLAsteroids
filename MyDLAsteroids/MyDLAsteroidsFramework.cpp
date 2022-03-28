@@ -6,14 +6,14 @@
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
 void MyDLAsteroidsFramework::inRange(Entity* e) {
-    if (e->x() < -e->width())
-        e->x() += e->width() + ScreenWidth;
-    else if (e->x() > ScreenWidth)
-        e->x() -= e->width() + ScreenWidth;
-    if (e->y() < -e->height())
-        e->y() += e->height() + ScreenHeight;
-    else if (e->y() > ScreenHeight)
-        e->y() -= e->height() + ScreenHeight;
+    if (e->x() < -(e->width() + deltaWidth))
+        e->x() += e->width() + MapWidth;
+    else if (e->x() > ScreenWidth + deltaWidth)
+        e->x() -= e->width() + MapWidth;
+    if (e->y() < -(e->height() + deltaHeight))
+        e->y() += e->height() + MapHeight;
+    else if (e->y() > ScreenHeight + deltaHeight)
+        e->y() -= e->height() + MapHeight;
 }
 
 bool MyDLAsteroidsFramework::newColides(int x, int y, int width, int height) {
@@ -26,12 +26,21 @@ bool MyDLAsteroidsFramework::newColides(int x, int y, int width, int height) {
 
 void MyDLAsteroidsFramework::sendBack(Entity* e) {
     bool isBig = rand() % 2;
-    int x, y, width, height , entityWidth, entityHeight;
+    int x, y, width, height , entityWidth, entityHeight, r;
     getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, entityWidth, entityHeight);
     do {
-        bool r = rand() % 2;
-        x = r ? rand() % ScreenWidth : (rand() % 2 ? -entityWidth : ScreenWidth);
-        y = r ? (rand() % 2 ? -entityHeight : ScreenHeight) : rand() % ScreenHeight;
+        if (rand() % 2) {
+            x = rand() % (MapWidth * 2) - MapWidth;
+            r = deltaHeight == 0 ? 0 : rand() % deltaHeight;
+            y = rand() % 2 ? -(r + entityHeight) : ScreenHeight + r;
+            std::cout << "a1 " << x << " " << y << std::endl;
+        }
+        else {
+            r = deltaWidth == 0 ? 0 : rand() % deltaWidth;
+            x = rand() % 2 ? -(r + entityWidth) : ScreenWidth + r;
+            y = rand() % (MapHeight * 2) - MapHeight;
+            std::cout << "a2 " << x << " " << y << std::endl;
+        }
         getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, width, height);
     } while (newColides(x, y, width, height));
     float constSpeedX = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
@@ -127,8 +136,8 @@ void MyDLAsteroidsFramework::fillEnemies() {
         bool isBig = rand() % 2;
         int x, y, width, height;
         do {
-            x = rand() % ScreenWidth;
-            y = rand() % ScreenHeight;
+            x = rand() % MapWidth - deltaWidth;
+            y = rand() % MapHeight - deltaHeight;
             getSpriteSize(isBig ? bigEnemySprite : smallEnemySprite, width, height);
         } while (Character->collides(x - Threshold, y - Threshold,
             width + Threshold * 2, height + Threshold * 2));
@@ -171,13 +180,18 @@ void MyDLAsteroidsFramework::drawEnemies() {
 }
 
 void MyDLAsteroidsFramework::PreInit(int& width, int& height, bool& fullscreen) {
-    width = 1024;
-    height = 768;
-    fullscreen = false;
+    width = ScreenWidth;
+    height = ScreenHeight;
+    fullscreen = bFullscreen;
 }
 
 bool MyDLAsteroidsFramework::Init() {
-    getScreenSize(ScreenWidth, ScreenHeight);
+    int w, h;
+    getScreenSize(w, h);
+    assert(w == ScreenWidth && h == ScreenHeight);
+    
+    if (MapWidth < ScreenWidth || MapHeight < ScreenHeight)
+        return false;
     
     showCursor(false);
     
