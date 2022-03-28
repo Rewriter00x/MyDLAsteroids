@@ -245,6 +245,7 @@ bool MyDLAsteroidsFramework::Init() {
 }
 
 void MyDLAsteroidsFramework::Close() {
+    
     // Removes all entities with these sprites
     destroySprite(BackgroundSprite);
     destroySprite(gameOverSprite);
@@ -253,6 +254,11 @@ void MyDLAsteroidsFramework::Close() {
     destroySprite(smallEnemySprite);
     destroySprite(Character->getSprite());
     destroySprite(Cursor->getSprite());
+    
+    delete Character;
+    delete Cursor;
+    for (Entity* enemy : Enemies)
+        delete enemy;
 }
 
 bool MyDLAsteroidsFramework::Tick() {
