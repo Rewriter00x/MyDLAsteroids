@@ -58,15 +58,15 @@ void MyDLAsteroidsFramework::zone() {
     for (int i = 0; i < Grid * Grid; i++)
         Zones[i].clear();
 
-    static int row = ScreenWidth / Grid;
-    static int col = ScreenHeight / Grid;
+    static int row = MapWidth / Grid;
+    static int col = MapHeight / Grid;
 
     // Zone all enemies
     for (Entity* enemy : Enemies) {
-        int x1 = enemy->x() <= 0 || enemy->x() + enemy->width() >= ScreenWidth ? 0 : (int)enemy->x() / row;
-        int x2 = enemy->x() <= 0 || enemy->x() + enemy->width() >= ScreenWidth ? 0 : (int)(enemy->x() + enemy->width()) / row;
-        int y1 = enemy->y() <= 0 || enemy->y() + enemy->height() >= ScreenHeight ? 0 : (int)enemy->y() / col;
-        int y2 = enemy->y() <= 0 || enemy->y() + enemy->height() >= ScreenHeight ? 0 : (int)(enemy->y() + enemy->height()) / col;
+        int x1 = enemy->x() <= -deltaWidth || enemy->x() + enemy->width() >= ScreenWidth + deltaWidth ? 0 : (int)(enemy->x() + deltaWidth) / row;
+        int x2 = enemy->x() <= -deltaWidth || enemy->x() + enemy->width() >= ScreenWidth + deltaWidth ? 0 : (int)(enemy->x() + enemy->width() + deltaWidth) / row;
+        int y1 = enemy->y() <= -deltaHeight || enemy->y() + enemy->height() >= ScreenHeight + deltaHeight ? 0 : (int)(enemy->y() + deltaHeight) / col;
+        int y2 = enemy->y() <= -deltaHeight || enemy->y() + enemy->height() >= ScreenHeight + deltaHeight ? 0 : (int)(enemy->y() + enemy->height() + deltaHeight) / col;
         int x1y1 = y1 * Grid + x1;
         int x2y1 = y1 * Grid + x2;
         int x1y2 = y2 * Grid + x1;
@@ -75,11 +75,11 @@ void MyDLAsteroidsFramework::zone() {
                 Zones[i].push_back(enemy);
     }
 
-    // Zone characters
-    static int x1 = (int)Character->x() / row;
-    static int x2 = (int)(Character->x() + Character->width()) / row;
-    static int y1 = (int)Character->y() / col;
-    static int y2 = (int)(Character->y() + Character->height()) / col;
+    // Zone character
+    static int x1 = (int)(Character->x() + deltaWidth) / row;
+    static int x2 = (int)(Character->x() + Character->width() + deltaWidth) / row;
+    static int y1 = (int)(Character->y() + deltaHeight) / col;
+    static int y2 = (int)(Character->y() + Character->height() + deltaHeight) / col;
     static int x1y1 = y1 * Grid + x1;
     static int x2y1 = y1 * Grid + x2;
     static int x1y2 = y2 * Grid + x1;
