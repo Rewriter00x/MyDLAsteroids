@@ -28,7 +28,7 @@ static const char* varv[varc]
 void parseInt(char* value, int& res) {
     int i = atoi(value);
     if (i == 0) {
-        std::cerr << "Bad value " << value << std::endl;
+        std::cerr << "Bad value \"" << value << "\"" << std::endl;
         return;
     }
     res = i;
@@ -37,7 +37,7 @@ void parseInt(char* value, int& res) {
 void parseFloat(char* value, float& res) {
     float f = atof(value);
     if (f == 0.0f) {
-        std::cerr << "Bad value " << value << std::endl;
+        std::cerr << "Bad value \"" << value << "\"" << std::endl;
         return;
     }
     res = f;
@@ -52,7 +52,7 @@ void parseSize(char* value, int& width, int& height) {
     int i = atoi(w);
     int j = atoi(h);
     if (i == 0 || j == 0) {
-        std::cerr << "Bad value " << value << std::endl;
+        std::cerr << "Bad value \"" << value << "\"" << std::endl;
         return;
     }
     width = i;
@@ -71,7 +71,7 @@ void parse(Vars i, char* value) {
             int num;
             parseInt(value, num);
             if (num > MaxEnemyNumber) {
-                std::cerr << "Bad value " << value << std::endl;
+                std::cerr << "Bad value \"" << value << "\"" << std::endl;
                 return;
             }
             EnemyNumber = num;
@@ -83,7 +83,7 @@ void parse(Vars i, char* value) {
             float chance;
             parseFloat(value, chance);
             if (chance > MaxAbilityChance) {
-                std::cerr << "Bad value " << value << std::endl;
+                std::cerr << "Bad value \"" << value << "\"" << std::endl;
                 return;
             }
             AbilityChance = chance;
@@ -92,24 +92,40 @@ void parse(Vars i, char* value) {
 }
 
 void parse(const char* variable, char* value) {
-    int i = 0;
-    for (; i < varc; i++)
-        if (variable == varv[i]) {
+    // Orginal version. Works on debug, but does not on release (-window != -window)
+//    for (int i = 0; i < varc; i++) {
+//        if (variable == varv[i]) {
+//            parse(Vars(i), value);
+//            return;
+//        }
+//        std::cout << "\"" << variable << "\" != \"" << varv[i] << "\"\n" << strlen(variable) << " != " << strlen(varv[i]) << "\n";
+//    }
+//    std::cerr << "Bad variable \"" << variable << "\""<< std::endl;
+    for (int i = 0; i < varc; i++) {
+        if (strlen(variable) == strlen(varv[i])) {
             parse(Vars(i), value);
             return;
         }
-    std::cerr << "Bad variable " << variable << std::endl;
+    }
+    std::cerr << "Bad variable \"" << variable << "\""<< std::endl;
 }
 
 int main(int argc, char* argv[]) {
     srand((unsigned int)time(0));
+    // i is 1 because first arg is path to file at mac (tried to delete it, did not work)
     for (int i = 1; i < argc; i += 2) {
         if (i + 1 >= argc) {
-            std::cerr << "Missing value for argument " << argv[i] << std::endl;
+            std::cerr << "Missing value for argument \"" << argv[i] << "\"" << std::endl;
             break;
         }
         parse(argv[i], argv[i + 1]);
     }
+    
+//    parse("-window", "800x600");
+//    parse("-map", "1600x1200");
+//    parse("-num_asteroids", "10");
+//    parse("-num_ammo", "2");
+//    parse("-ability_probability", "0.3");
     
     std::cout << "window: " << ScreenWidth << "x" << ScreenHeight << "\n";
     std::cout << "map: " << MapWidth << "x" << MapHeight << "\n";
