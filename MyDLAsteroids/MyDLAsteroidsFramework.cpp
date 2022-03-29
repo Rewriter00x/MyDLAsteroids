@@ -125,6 +125,10 @@ void MyDLAsteroidsFramework::zone() {
     for (Entity* enemy : Enemies)
         zoneEntity(enemy);
     
+    // Zone all bullets
+    for (Entity* bullet : Bullets)
+        zoneEntity(bullet);
+    
     // Zone character
     static int x1 = (int)(Character->x() + DeltaWidth) / GridWidth;
     static int x2 = (int)(Character->x() + Character->width() + DeltaWidth) / GridWidth;
@@ -139,21 +143,27 @@ void MyDLAsteroidsFramework::zone() {
 }
 
 void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
-    // Actually, if any is character end game
-    if (e1 == Character || e2 == Character) { // and now equals bullet
+    if ((e1 == Character && e2->getSprite() == BulletSprite) || (e2 == Character && e1->getSprite() == BulletSprite))
+        return;
+    
+    if (e1 == Character || e2 == Character) {
         bPaused = true;
         bGameOver = true;
         return;
     }
-//    // If isBullet and smallEnemy sendback if big split
-//    if (e1->getSprite() == smallEnemySprite)
-//        sendBack(e1);
-//    else
-//        split(e1);
-//    if (e2->getSprite() == smallEnemySprite)
-//        sendBack(e2);
-//    else
-//        split(e2);
+    
+    if (e2->getSprite() == BulletSprite) {
+        collided(e2, e1);
+        return;
+    }
+    if (e1->getSprite() == BulletSprite) {
+        if (e2->getSprite() == SmallEnemySprite)
+            sendBack(e2);
+        else
+            split(e2);
+        deleteBullet(e1);
+    }
+    
     flyApart(e1, e2);
 }
 
@@ -175,8 +185,13 @@ void MyDLAsteroidsFramework::moveEntityReverse(Entity* e) {
 }
 
 void MyDLAsteroidsFramework::moveEnemies() {
-    for (Entity*& enemy : Enemies)
+    for (Entity* enemy : Enemies)
         moveEntityReverse(enemy);
+}
+
+void MyDLAsteroidsFramework::moveBullets() {
+    for (Entity* bullet : Bullets)
+        moveEntityReverse(bullet);
 }
 
 void MyDLAsteroidsFramework::fillEnemies() {
@@ -198,6 +213,27 @@ void MyDLAsteroidsFramework::fillEnemies() {
         Enemies.push_back(new Entity(isBig ? BigEnemySprite
             : SmallEnemySprite, constSpeedX, constSpeedY, x, y));
     }
+}
+
+void MyDLAsteroidsFramework::addBullet() {
+    static float x = Character->x() + (Character->width() - BulletSpriteWidth) / 2;
+    static float y = Character->y() + (Character->height() - BulletSpriteHeight) / 2;
+    float constSpeedX = Cursor->x() - x;
+    float constSpeedY = Cursor->y() - y;
+    float len = sqrtf(constSpeedX * constSpeedX + constSpeedY * constSpeedY);
+    constSpeedX /= -len;
+    constSpeedY /= -len;
+    if (Bullets.size() >= Ammo)
+        Bullets.erase(Bullets.begin());
+    Bullets.push_back(new Entity(BulletSprite, constSpeedX, constSpeedY, x, y));
+}
+
+void MyDLAsteroidsFramework::deleteBullet(Entity* e) {
+    for (int i = 0; i < Bullets.size(); i++)
+        if (Bullets[i] == e) {
+            Bullets.erase(Bullets.begin() + i);
+            return;
+        }
 }
 
 void MyDLAsteroidsFramework::drawBackground() {
@@ -225,8 +261,13 @@ void MyDLAsteroidsFramework::drawBackground() {
 }
 
 void MyDLAsteroidsFramework::drawEnemies() {
-    for (Entity*& enemy : Enemies)
+    for (Entity* enemy : Enemies)
         enemy->draw();
+}
+
+void MyDLAsteroidsFramework::drawBullets() {
+    for (Entity* bullet : Bullets)
+        bullet->draw();
 }
 
 void MyDLAsteroidsFramework::PreInit(int& width, int& height, bool& fullscreen) {
@@ -236,8 +277,8 @@ void MyDLAsteroidsFramework::PreInit(int& width, int& height, bool& fullscreen) 
 }
 
 bool MyDLAsteroidsFramework::Init() {
-    // if fullscreen update
-    getScreenSize(ScreenWidth, ScreenHeight);
+    if (bFullscreen)
+        getScreenSize(ScreenWidth, ScreenHeight);
     
     if (MapWidth < ScreenWidth || MapHeight < ScreenHeight)
         return false;
@@ -260,10 +301,13 @@ bool MyDLAsteroidsFramework::Init() {
     BigEnemySprite = createSprite("data/big_asteroid.png");
     SmallEnemySprite = createSprite("data/small_asteroid.png");
     
+    BulletSprite = createSprite("data/bullet.png");
+    getSpriteSize(BulletSprite, BulletSpriteWidth, BulletSpriteHeight);
+    
     getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
     
-    if (!(BackgroundSprite && Character->getSprite() && Cursor->getSprite())
-        && BigEnemySprite && SmallEnemySprite)
+    if (!(BackgroundSprite && Character->getSprite() && Cursor->getSprite()
+        && BigEnemySprite && SmallEnemySprite && BulletSprite))
         return false;
     
     fillEnemies();
@@ -301,6 +345,8 @@ bool MyDLAsteroidsFramework::Tick() {
     
     checkColisions();
     
+    drawBullets();
+    
     // Drawing entities
     Character->draw();
     drawEnemies();
@@ -308,6 +354,7 @@ bool MyDLAsteroidsFramework::Tick() {
     
     // Moving entities
     moveEnemies();
+    moveBullets();
     
     Entity::updateSpeed();
     
@@ -334,6 +381,7 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
     
     switch (button) {
         case FRMouseButton::LEFT:
+            addBullet();
             return;
             
         case FRMouseButton::MIDDLE:

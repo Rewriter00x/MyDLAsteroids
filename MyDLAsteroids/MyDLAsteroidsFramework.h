@@ -11,7 +11,9 @@ class MyDLAsteroidsFramework : public Framework {
     static const int Threshold = 100;
     
     static const char* Title;
-    static const int EnemyNumber = 100;
+    const int EnemyNumber = 100;
+    
+    const int Ammo = 3;
     
     const bool bFullscreen = false;
     
@@ -33,9 +35,13 @@ class MyDLAsteroidsFramework : public Framework {
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;
     
+    int BulletSpriteWidth;
+    int BulletSpriteHeight;
+    
     Sprite* BackgroundSprite;
     Sprite* BigEnemySprite;
     Sprite* SmallEnemySprite;
+    Sprite* BulletSprite;
     Sprite* GameOverSprite;
     Sprite* PauseSprite;
     
@@ -44,6 +50,7 @@ class MyDLAsteroidsFramework : public Framework {
     
     std::vector<Entity*> Enemies;
     std::vector<Entity*> Zones[Grid * Grid];
+    std::vector<Entity*> Bullets;
     
 protected:
     void inRange(Entity* e);
@@ -80,11 +87,19 @@ protected:
     
     void moveEnemies();
     
+    void moveBullets();
+    
     void fillEnemies();
+    
+    void addBullet();
+    
+    void deleteBullet(Entity* e);
     
     void drawBackground();
     
     void drawEnemies();
+    
+    void drawBullets();
 
 public:
 
