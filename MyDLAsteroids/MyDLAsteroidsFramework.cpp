@@ -323,18 +323,29 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
     if (isReleased)
         return;
     
-    if (button == FRMouseButton::MIDDLE) {
-        if (!bGameOver)
-            bPaused = !bPaused;
-        else {
-            Entity::speedX = 0.0f;
-            Entity::speedY = 0.0f;
-            fillEnemies();
-            bGameOver = false;
-            bPaused = false;
-        }
+    if (bGameOver) {
+        Entity::speedX = 0.0f;
+        Entity::speedY = 0.0f;
+        fillEnemies();
+        bGameOver = false;
+        bPaused = false;
+        return;
     }
-        
+    
+    switch (button) {
+        case FRMouseButton::LEFT:
+            return;
+            
+        case FRMouseButton::MIDDLE:
+            bPaused = !bPaused;
+            return;
+            
+        case FRMouseButton::RIGHT:
+            return;
+            
+        default:
+            return;
+    }
 }
 
 void MyDLAsteroidsFramework::onKeyPressed(FRKey k) {
