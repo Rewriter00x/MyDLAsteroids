@@ -158,7 +158,7 @@ void MyDLAsteroidsFramework::zone() {
 }
 
 void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
-    if ((e1 == Character && e2->getSprite() == BulletSprite) || (e2 == Character && e1->getSprite() == BulletSprite))
+    if ((e1 == Character && e2->getSprite() == BulletSprite) || (e2 == Character && e1->getSprite() == BulletSprite) || (e1->getSprite() == BulletSprite && e2->getSprite() == BulletSprite))
         return;
     
     if (e1 == Character || e2 == Character) {
