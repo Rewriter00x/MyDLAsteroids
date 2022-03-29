@@ -1,6 +1,7 @@
 #include <cmath>
 #include "MyDLAsteroidsFramework.h"
 #include "Entity.h"
+#include <iostream>
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
@@ -95,6 +96,8 @@ void MyDLAsteroidsFramework::split(Entity* enemy, Entity* bullet) {
     enemy->x() -= enemy->width() / 2;
     enemy->y() -= enemy->height() / 2;
     enemy->setSprite(SmallEnemySprite);
+    bullet->constSpeedX() /= Entity::maxSpeed / 2;
+    bullet->constSpeedY() /= Entity::maxSpeed / 2;
     enemy->constSpeedX() = (enemy->constSpeedX() + bullet->constSpeedX()) / 2;
     enemy->constSpeedY() = (enemy->constSpeedY() + bullet->constSpeedY()) / 2;
     Enemies.push_back(
@@ -230,8 +233,8 @@ void MyDLAsteroidsFramework::addBullet() {
     float constSpeedX = Cursor->x() - x;
     float constSpeedY = Cursor->y() - y;
     float len = sqrtf(constSpeedX * constSpeedX + constSpeedY * constSpeedY);
-    constSpeedX /= -len;
-    constSpeedY /= -len;
+    constSpeedX *= Entity::maxSpeed / -len;
+    constSpeedY *= Entity::maxSpeed / -len;
     if (Bullets.size() >= Ammo)
         Bullets.erase(Bullets.begin());
     Bullets.push_back(new Entity(BulletSprite, constSpeedX, constSpeedY, x, y));
