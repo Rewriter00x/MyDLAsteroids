@@ -4,6 +4,10 @@
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
+struct Rect {
+    int x1y1, x2y1, x1y2, x2y2;
+};
+
 void MyDLAsteroidsFramework::inRange(Entity* e) {
     if (e->x() < -(e->width() + DeltaWidth))
         e->x() += e->width() + MapWidth;
@@ -13,6 +17,22 @@ void MyDLAsteroidsFramework::inRange(Entity* e) {
         e->y() += e->height() + MapHeight;
     else if (e->y() > ScreenHeight + DeltaHeight)
         e->y() -= e->height() + MapHeight;
+}
+
+Rect MyDLAsteroidsFramework::getZones(int x, int y, int width, int height) {
+    int x1 = x <= -DeltaWidth || x + width >= ScreenWidth + DeltaWidth ? 0 : (int)(x + DeltaWidth) / GridWidth;
+    int x2 = x <= -DeltaWidth || x + width >= ScreenWidth + DeltaWidth ? 0 : (int)(x + width + DeltaWidth) / GridWidth;
+    int y1 = y <= -DeltaHeight || y + height >= ScreenHeight + DeltaHeight ? 0 : (int)(y + DeltaHeight) / GridHeight;
+    int y2 = y <= -DeltaHeight || y + height >= ScreenHeight + DeltaHeight ? 0 : (int)(y + height + DeltaHeight) / GridHeight;
+    int x1y1 = y1 * Grid + x1;
+    int x2y1 = y1 * Grid + x2;
+    int x1y2 = y2 * Grid + x1;
+    int x2y2 = y2 * Grid + y2;
+    return Rect{x1y1, x2y1, x1y2, x2y2};
+}
+
+Rect MyDLAsteroidsFramework::getZones(Entity* e) {
+    return getZones(e->x(), e->y(), e->width(), e->height());
 }
 
 void MyDLAsteroidsFramework::checkZoneCollision(int z) {
@@ -35,15 +55,9 @@ bool MyDLAsteroidsFramework::collidesWithZone(Entity* e, int z) {
 }
 
 bool MyDLAsteroidsFramework::newColides(int x, int y, int width, int height) {
-    int x1 = x <= -DeltaWidth || x + width >= ScreenWidth + DeltaWidth ? 0 : (int)(x + DeltaWidth) / GridWidth;
-    int x2 = x <= -DeltaWidth || x + width >= ScreenWidth + DeltaWidth ? 0 : (int)(x + width + DeltaWidth) / GridWidth;
-    int y1 = y <= -DeltaHeight || y + height >= ScreenHeight + DeltaHeight ? 0 : (int)(y + DeltaHeight) / GridHeight;
-    int y2 = y <= -DeltaHeight || y + height >= ScreenHeight + DeltaHeight ? 0 : (int)(y + height + DeltaHeight) / GridHeight;
-    int x1y1 = y1 * Grid + x1;
-    int x2y1 = y1 * Grid + x2;
-    int x1y2 = y2 * Grid + x1;
-    for (int j = x1y1; j <= x1y2; j += Grid)
-        for (int i = j; i <= j + (x2y1 - x1y1); i++)
+    Rect r = getZones(x, y, width, height);
+    for (int j = r.x1y1; j <= r.x1y2; j += Grid)
+        for (int i = j; i <= j + (r.x2y1 - r.x1y1); i++)
             if (collidesWithZone(x, y, width, height, i))
                 return true;
     return false;
@@ -97,15 +111,9 @@ void MyDLAsteroidsFramework::flyApart(Entity* e1, Entity* e2) {
 }
 
 void MyDLAsteroidsFramework::zoneEntity(Entity* e) {
-    int x1 = e->x() <= -DeltaWidth || e->x() + e->width() >= ScreenWidth + DeltaWidth ? 0 : (int)(e->x() + DeltaWidth) / GridWidth;
-    int x2 = e->x() <= -DeltaWidth || e->x() + e->width() >= ScreenWidth + DeltaWidth ? 0 : (int)(e->x() + e->width() + DeltaWidth) / GridWidth;
-    int y1 = e->y() <= -DeltaHeight || e->y() + e->height() >= ScreenHeight + DeltaHeight ? 0 : (int)(e->y() + DeltaHeight) / GridHeight;
-    int y2 = e->y() <= -DeltaHeight || e->y() + e->height() >= ScreenHeight + DeltaHeight ? 0 : (int)(e->y() + e->height() + DeltaHeight) / GridHeight;
-    int x1y1 = y1 * Grid + x1;
-    int x2y1 = y1 * Grid + x2;
-    int x1y2 = y2 * Grid + x1;
-    for (int j = x1y1; j <= x1y2; j += Grid)
-        for (int i = j; i <= j + (x2y1 - x1y1); i++)
+    Rect r = getZones(e);
+    for (int j = r.x1y1; j <= r.x1y2; j += Grid)
+        for (int i = j; i <= j + (r.x2y1 - r.x1y1); i++)
             Zones[i].push_back(e);
 }
 

@@ -3,6 +3,7 @@
 #include "Framework.h"
 
 class Entity;
+struct Rect;
 
 class MyDLAsteroidsFramework : public Framework {
     
@@ -46,6 +47,10 @@ class MyDLAsteroidsFramework : public Framework {
     
 protected:
     void inRange(Entity* e);
+    
+    Rect getZones(int x, int y, int width, int height);
+    
+    Rect getZones(Entity* e);
     
     void checkZoneCollision(int z);
     
