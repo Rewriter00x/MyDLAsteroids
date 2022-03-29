@@ -3,7 +3,10 @@
 #include "Framework.h"
 
 class Entity;
-struct Rect;
+
+struct Rect {
+    int x1y1, x2y1, x1y2, x2y2;
+};
 
 struct Timer {
     const float end, step;
@@ -11,8 +14,12 @@ struct Timer {
     
     Timer(float end, float step) : end(end), step(step), start(end) {}
     
-    void reset() {
+    void begin() {
         start = 0.0f;
+    }
+    
+    void reset() {
+        start = end;
     }
     
     void tick() {
@@ -20,7 +27,7 @@ struct Timer {
             return;
         start += step;
         if (ended())
-            start = end;
+            reset();
     }
     
     bool ended() {
@@ -38,6 +45,7 @@ class MyDLAsteroidsFramework : public Framework {
     const float AbilityChance;
     
     const int Ammo;
+    const int AutoAmmo = 3;
     
     const bool bFullscreen = false;
     
@@ -56,6 +64,8 @@ class MyDLAsteroidsFramework : public Framework {
     bool bPaused = false;
     bool bGameOver = false;
     
+    bool bAutoShooting = true;
+    
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;
     
@@ -63,6 +73,10 @@ class MyDLAsteroidsFramework : public Framework {
     int BulletSpriteHeight;
         
     Timer ShootingDelay = Timer(1.0f, 0.05f);
+    Timer AutoShootingDelay = Timer(1.0f, 0.05f);
+    
+    Rect CharacterZones;
+    Rect CharacterThreshold;
     
     Sprite* BackgroundSprite;
     Sprite* BigEnemySprite;
@@ -77,6 +91,7 @@ class MyDLAsteroidsFramework : public Framework {
     std::vector<Entity*> Enemies;
     std::vector<Entity*> Zones[Grid * Grid];
     std::vector<Entity*> Bullets;
+    std::vector<Entity*> AutoBullets;
     
 public:
     MyDLAsteroidsFramework(int ScreenWidth, int ScreenHeight, int MapWidth, int MapHeight, int EnemyNumber, int Ammo, float AbilityChance);
@@ -120,9 +135,13 @@ protected:
     
     void fillEnemies();
     
+    Entity* createBullet(Entity* e);
+    
     void addBullet();
     
-    void deleteBullet(Entity* e);
+    void addBullet(Entity* e);
+    
+    bool deleteBullet(Entity* e, std::vector<Entity*>& from);
     
     void updateTimers();
     

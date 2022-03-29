@@ -9,10 +9,6 @@ MyDLAsteroidsFramework::MyDLAsteroidsFramework(int ScreenWidth, int ScreenHeight
     MapHeight(MapHeight), EnemyNumber(EnemyNumber), Ammo(Ammo), AbilityChance(AbilityChance)
     {}
 
-struct Rect {
-    int x1y1, x2y1, x1y2, x2y2;
-};
-
 void MyDLAsteroidsFramework::inRange(Entity* e) {
     if (e->x() < -(e->width() + DeltaWidth))
         e->x() += e->width() + MapWidth;
@@ -143,17 +139,12 @@ void MyDLAsteroidsFramework::zone() {
     // Zone all bullets
     for (Entity* bullet : Bullets)
         zoneEntity(bullet);
+    for (Entity* bullet : AutoBullets)
+        zoneEntity(bullet);
     
     // Zone character
-    static int x1 = (int)(Character->x() + DeltaWidth) / GridWidth;
-    static int x2 = (int)(Character->x() + Character->width() + DeltaWidth) / GridWidth;
-    static int y1 = (int)(Character->y() + DeltaHeight) / GridHeight;
-    static int y2 = (int)(Character->y() + Character->height() + DeltaHeight) / GridHeight;
-    static int x1y1 = y1 * Grid + x1;
-    static int x2y1 = y1 * Grid + x2;
-    static int x1y2 = y2 * Grid + x1;
-    for (int j = x1y1; j <= x1y2; j += Grid)
-        for (int i = j; i <= j + (x2y1 - x1y1); i++)
+    for (int j = CharacterZones.x1y1; j <= CharacterZones.x1y2; j += Grid)
+        for (int i = j; i <= j + (CharacterZones.x2y1 - CharacterZones.x1y1); i++)
             Zones[i].push_back(Character);
 }
 
@@ -178,7 +169,8 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
         else
             split(e2, e1);
         
-        deleteBullet(e1);
+        if (!deleteBullet(e1, Bullets))
+            deleteBullet(e1, AutoBullets);
         return;
     }
     
@@ -190,6 +182,22 @@ void MyDLAsteroidsFramework::checkCollisions() {
 
     for (int z = 0; z < Grid * Grid; z++)
         checkZoneCollision(z);
+    
+    for (int j = CharacterThreshold.x1y1; j <= CharacterThreshold.x1y2; j += Grid) {
+        for (int i = j; i <= j + (CharacterThreshold.x2y1 - CharacterThreshold.x1y1); i++) {
+            for (Entity* enemy : Zones[i]) {
+                if (enemy == Character)
+                    continue;
+                if (enemy->collides(Character->x() - Threshold, Character->y() - Threshold, Character->width() + Threshold * 2, Character->height() + Threshold * 2)) {
+                    if (AutoShootingDelay.ended()) {
+                        addBullet(enemy);
+                        AutoShootingDelay.begin();
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void MyDLAsteroidsFramework::moveEntity(Entity* e) {
@@ -209,6 +217,8 @@ void MyDLAsteroidsFramework::moveEnemies() {
 
 void MyDLAsteroidsFramework::moveBullets() {
     for (Entity* bullet : Bullets)
+        moveEntityReverse(bullet);
+    for (Entity* bullet : AutoBullets)
         moveEntityReverse(bullet);
 }
 
@@ -232,29 +242,41 @@ void MyDLAsteroidsFramework::fillEnemies() {
     }
 }
 
-void MyDLAsteroidsFramework::addBullet() {
+Entity* MyDLAsteroidsFramework::createBullet(Entity* e) {
     static float x = Character->x() + (Character->width() - BulletSpriteWidth) / 2;
     static float y = Character->y() + (Character->height() - BulletSpriteHeight) / 2;
-    float constSpeedX = Cursor->x() - x;
-    float constSpeedY = Cursor->y() - y;
+    float constSpeedX = e->x() - x;
+    float constSpeedY = e->y() - y;
     float len = sqrtf(constSpeedX * constSpeedX + constSpeedY * constSpeedY);
     constSpeedX *= Entity::maxSpeed / -len;
     constSpeedY *= Entity::maxSpeed / -len;
-    if (Bullets.size() >= Ammo)
-        Bullets.erase(Bullets.begin());
-    Bullets.push_back(new Entity(BulletSprite, constSpeedX, constSpeedY, x, y));
+    return new Entity(BulletSprite, constSpeedX, constSpeedY, x, y);
 }
 
-void MyDLAsteroidsFramework::deleteBullet(Entity* e) {
-    for (int i = 0; i < Bullets.size(); i++)
-        if (Bullets[i] == e) {
-            Bullets.erase(Bullets.begin() + i);
-            return;
+void MyDLAsteroidsFramework::addBullet() {
+    if (Bullets.size() >= Ammo)
+        Bullets.erase(Bullets.begin());
+    Bullets.push_back(createBullet(Cursor));
+}
+
+void MyDLAsteroidsFramework::addBullet(Entity* e) {
+    if (AutoBullets.size() >= AutoAmmo)
+        AutoBullets.erase(AutoBullets.begin());
+    AutoBullets.push_back(createBullet(e));
+}
+
+bool MyDLAsteroidsFramework::deleteBullet(Entity* e, std::vector<Entity*>& from) {
+    for (int i = 0; i < from.size(); i++)
+        if (from[i] == e) {
+            from.erase(from.begin() + i);
+            return true;
         }
+    return false;
 }
 
 void MyDLAsteroidsFramework::updateTimers() {
     ShootingDelay.tick();
+    AutoShootingDelay.tick();
 }
 
 void MyDLAsteroidsFramework::drawBackground() {
@@ -289,11 +311,16 @@ void MyDLAsteroidsFramework::drawEnemies() {
 void MyDLAsteroidsFramework::drawBullets() {
     for (Entity* bullet : Bullets)
         bullet->draw();
+    for (Entity* bullet : AutoBullets)
+        bullet->draw();
 }
 
 void MyDLAsteroidsFramework::restart() {
     fillEnemies();
     Bullets.clear();
+    AutoBullets.clear();
+    ShootingDelay.reset();
+    AutoShootingDelay.reset();
 }
 
 void MyDLAsteroidsFramework::PreInit(int& width, int& height, bool& fullscreen) {
@@ -318,6 +345,8 @@ bool MyDLAsteroidsFramework::Init() {
     getSpriteSize(characterSprite, characterWidth, characterHeight);
     Character = new Entity(characterSprite, 0.0f, 0.0f,
         (ScreenWidth - characterWidth) / 2, (ScreenHeight - characterHeight) / 2);
+    CharacterZones = getZones(Character);
+    CharacterThreshold = getZones(Character->x() - Threshold, Character->y() - Threshold, Character->width() + Threshold * 2, Character->height() + Threshold * 2);
     
     Cursor = new Entity(createSprite("data/circle.tga"));
     
@@ -357,6 +386,8 @@ void MyDLAsteroidsFramework::Close() {
     for (Entity* enemy : Enemies)
         delete enemy;
     for (Entity* bullet : Bullets)
+        delete bullet;
+    for (Entity* bullet : AutoBullets)
         delete bullet;
 }
 
@@ -414,7 +445,7 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
         case FRMouseButton::LEFT:
             if (ShootingDelay.ended()) {
                 addBullet();
-                ShootingDelay.reset();
+                ShootingDelay.begin();
             }
             return;
             
