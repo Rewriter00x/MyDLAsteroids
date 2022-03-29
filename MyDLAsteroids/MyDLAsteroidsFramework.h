@@ -11,17 +11,18 @@ class MyDLAsteroidsFramework : public Framework {
     static const int Threshold = 100;
     
     static const char* Title;
-    const int EnemyNumber = 100;
+    const int EnemyNumber;
+    const float AbilityChance;
     
-    const int Ammo = 3;
+    const int Ammo;
     
     const bool bFullscreen = false;
     
-    int ScreenWidth = 1024;
-    int ScreenHeight = 768;
+    int ScreenWidth;
+    int ScreenHeight;
     
-    int MapWidth = ScreenWidth * 2;
-    int MapHeight = ScreenHeight * 2;
+    int MapWidth;
+    int MapHeight;
     
     int DeltaWidth = (MapWidth - ScreenWidth) / 2;
     int DeltaHeight = (MapHeight - ScreenHeight) / 2;
@@ -51,6 +52,9 @@ class MyDLAsteroidsFramework : public Framework {
     std::vector<Entity*> Enemies;
     std::vector<Entity*> Zones[Grid * Grid];
     std::vector<Entity*> Bullets;
+    
+public:
+    MyDLAsteroidsFramework(int ScreenWidth, int ScreenHeight, int MapWidth, int MapHeight, int EnemyNumber, int Ammo, float AbilityChance);
     
 protected:
     void inRange(Entity* e);

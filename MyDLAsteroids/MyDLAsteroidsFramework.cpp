@@ -5,6 +5,11 @@
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
+MyDLAsteroidsFramework::MyDLAsteroidsFramework(int ScreenWidth, int ScreenHeight, int MapWidth, int MapHeight, int EnemyNumber, int Ammo, float AbilityChance)
+    : ScreenWidth(ScreenWidth), ScreenHeight(ScreenHeight), MapWidth(MapWidth),
+    MapHeight(MapHeight), EnemyNumber(EnemyNumber), Ammo(Ammo), AbilityChance(AbilityChance)
+    {}
+
 struct Rect {
     int x1y1, x2y1, x1y2, x2y2;
 };
