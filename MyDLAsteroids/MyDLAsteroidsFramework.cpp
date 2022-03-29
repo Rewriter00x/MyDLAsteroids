@@ -84,7 +84,8 @@ void MyDLAsteroidsFramework::sendBack(Entity* e) {
             y = rand() % (MapHeight * 2) - MapHeight;
         }
         getSpriteSize(isBig ? BigEnemySprite : SmallEnemySprite, width, height);
-    } while (newColides(x, y, width, height));
+    } while (Character->collides(x - Threshold, y - Threshold,
+        width + Threshold * 2, height + Threshold * 2) || newColides(x, y, width, height));
     float constSpeedX = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
     float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
     constSpeedX = rand() % 2 ? constSpeedX : -constSpeedX;
@@ -221,8 +222,7 @@ void MyDLAsteroidsFramework::fillEnemies() {
             y = rand() % MapHeight - DeltaHeight * 2;
             getSpriteSize(isBig ? BigEnemySprite : SmallEnemySprite, width, height);
         } while (Character->collides(x - Threshold, y - Threshold,
-            width + Threshold * 2, height + Threshold * 2)
-            || newColides(x, y, width, height));
+            width + Threshold * 2, height + Threshold * 2) || newColides(x, y, width, height));
         float constSpeedX = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         constSpeedX = rand() % 2 ? constSpeedX : -constSpeedX;
@@ -251,6 +251,10 @@ void MyDLAsteroidsFramework::deleteBullet(Entity* e) {
             Bullets.erase(Bullets.begin() + i);
             return;
         }
+}
+
+void MyDLAsteroidsFramework::updateTimers() {
+    ShootingDelay.tick();
 }
 
 void MyDLAsteroidsFramework::drawBackground() {
@@ -379,6 +383,8 @@ bool MyDLAsteroidsFramework::Tick() {
         moveBullets();
         
         Entity::updateSpeed();
+        
+        updateTimers();
     }
     
     Cursor->drawCentered();
@@ -406,7 +412,10 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
     
     switch (button) {
         case FRMouseButton::LEFT:
-            addBullet();
+            if (ShootingDelay.ended()) {
+                addBullet();
+                ShootingDelay.reset();
+            }
             return;
             
         case FRMouseButton::MIDDLE:

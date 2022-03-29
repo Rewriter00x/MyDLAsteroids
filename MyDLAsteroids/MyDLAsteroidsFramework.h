@@ -5,6 +5,29 @@
 class Entity;
 struct Rect;
 
+struct Timer {
+    const float end, step;
+    float start;
+    
+    Timer(float end, float step) : end(end), step(step), start(end) {}
+    
+    void reset() {
+        start = 0.0f;
+    }
+    
+    void tick() {
+        if (ended())
+            return;
+        start += step;
+        if (ended())
+            start = end;
+    }
+    
+    bool ended() {
+        return start >= end;
+    }
+};
+
 class MyDLAsteroidsFramework : public Framework {
     
     static const int Grid = 4;
@@ -38,6 +61,8 @@ class MyDLAsteroidsFramework : public Framework {
     
     int BulletSpriteWidth;
     int BulletSpriteHeight;
+        
+    Timer ShootingDelay = Timer(1.0f, 0.05f);
     
     Sprite* BackgroundSprite;
     Sprite* BigEnemySprite;
@@ -98,6 +123,8 @@ protected:
     void addBullet();
     
     void deleteBullet(Entity* e);
+    
+    void updateTimers();
     
     void drawBackground();
     
