@@ -270,6 +270,11 @@ void MyDLAsteroidsFramework::drawBullets() {
         bullet->draw();
 }
 
+void MyDLAsteroidsFramework::restart() {
+    fillEnemies();
+    Bullets.clear();
+}
+
 void MyDLAsteroidsFramework::PreInit(int& width, int& height, bool& fullscreen) {
     width = ScreenWidth;
     height = ScreenHeight;
@@ -310,7 +315,7 @@ bool MyDLAsteroidsFramework::Init() {
         && BigEnemySprite && SmallEnemySprite && BulletSprite))
         return false;
     
-    fillEnemies();
+    restart();
     
     return true;
 }
@@ -373,7 +378,7 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
     if (bGameOver) {
         Entity::speedX = 0.0f;
         Entity::speedY = 0.0f;
-        fillEnemies();
+        restart();
         bGameOver = false;
         bPaused = false;
         return;

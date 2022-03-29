@@ -100,6 +100,8 @@ protected:
     void drawEnemies();
     
     void drawBullets();
+    
+    void restart();
 
 public:
 
