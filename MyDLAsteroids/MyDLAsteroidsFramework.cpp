@@ -172,6 +172,7 @@ void MyDLAsteroidsFramework::moveEnemies() {
 }
 
 void MyDLAsteroidsFramework::fillEnemies() {
+    Enemies.clear();
     for (int i = 0; i < EnemyNumber; i++) {
         bool isBig = rand() % 2;
         int x, y, width, height;
@@ -314,8 +315,18 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
     if (isReleased)
         return;
     
-    if (button == FRMouseButton::MIDDLE && !bGameOver)
-        bPaused = !bPaused;
+    if (button == FRMouseButton::MIDDLE) {
+        if (!bGameOver)
+            bPaused = !bPaused;
+        else {
+            Entity::speedX = 0.0f;
+            Entity::speedY = 0.0f;
+            fillEnemies();
+            bGameOver = false;
+            bPaused = false;
+        }
+    }
+        
 }
 
 void MyDLAsteroidsFramework::onKeyPressed(FRKey k) {
