@@ -227,9 +227,8 @@ void MyDLAsteroidsFramework::PreInit(int& width, int& height, bool& fullscreen) 
 }
 
 bool MyDLAsteroidsFramework::Init() {
-    int w, h;
-    getScreenSize(w, h);
-    assert(w == ScreenWidth && h == ScreenHeight);
+    // if fullscreen update
+    getScreenSize(ScreenWidth, ScreenHeight);
     
     if (MapWidth < ScreenWidth || MapHeight < ScreenHeight)
         return false;
