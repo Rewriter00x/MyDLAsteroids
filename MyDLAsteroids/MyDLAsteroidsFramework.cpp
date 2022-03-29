@@ -352,25 +352,26 @@ bool MyDLAsteroidsFramework::Tick() {
         getSpriteSize(bGameOver ? GameOverSprite : PauseSprite, width, height);
         drawSprite(bGameOver ? GameOverSprite : PauseSprite,
             (ScreenWidth - width) / 2, (ScreenHeight - height) / 2);
-        return false;
+    }
+    else {
+        drawBackground();
+        
+        checkColisions();
+        
+        drawBullets();
+        
+        // Drawing entities
+        Character->draw();
+        drawEnemies();
+        
+        // Moving entities
+        moveEnemies();
+        moveBullets();
+        
+        Entity::updateSpeed();
     }
     
-    drawBackground();
-    
-    checkColisions();
-    
-    drawBullets();
-    
-    // Drawing entities
-    Character->draw();
-    drawEnemies();
     Cursor->drawCentered();
-    
-    // Moving entities
-    moveEnemies();
-    moveBullets();
-    
-    Entity::updateSpeed();
     
     return false;
 }
