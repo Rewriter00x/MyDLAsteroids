@@ -1,7 +1,6 @@
 #include <cmath>
 #include "MyDLAsteroidsFramework.h"
 #include "Entity.h"
-#include <iostream>
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
@@ -179,6 +178,7 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
             split(e2, e1);
         
         deleteBullet(e1);
+        return;
     }
     
     flyApart(e1, e2);
@@ -352,6 +352,8 @@ void MyDLAsteroidsFramework::Close() {
     delete Cursor;
     for (Entity* enemy : Enemies)
         delete enemy;
+    for (Entity* bullet : Bullets)
+        delete bullet;
 }
 
 bool MyDLAsteroidsFramework::Tick() {
