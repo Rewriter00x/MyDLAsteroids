@@ -91,8 +91,15 @@ void MyDLAsteroidsFramework::sendBack(Entity* e) {
     e->setSprite(isBig ? BigEnemySprite : SmallEnemySprite);
 }
 
-void MyDLAsteroidsFramework::split(Entity* e) {
-    
+void MyDLAsteroidsFramework::split(Entity* enemy, Entity* bullet) {
+    enemy->x() -= enemy->width() / 2;
+    enemy->y() -= enemy->height() / 2;
+    enemy->setSprite(SmallEnemySprite);
+    enemy->constSpeedX() = (enemy->constSpeedX() + bullet->constSpeedX()) / 2;
+    enemy->constSpeedY() = (enemy->constSpeedY() + bullet->constSpeedY()) / 2;
+    Enemies.push_back(
+        new Entity(SmallEnemySprite, -enemy->constSpeedX(), -enemy->constSpeedY(),
+        enemy->x() + enemy->width(), enemy->y() + enemy->height()));
 }
 
 void MyDLAsteroidsFramework::flyApart(Entity* e1, Entity* e2) {
@@ -153,14 +160,16 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
     }
     
     if (e2->getSprite() == BulletSprite) {
-        collided(e2, e1);
-        return;
+        Entity* temp = e1;
+        e1 = e2;
+        e2 = temp;
     }
     if (e1->getSprite() == BulletSprite) {
         if (e2->getSprite() == SmallEnemySprite)
             sendBack(e2);
         else
-            split(e2);
+            split(e2, e1);
+        
         deleteBullet(e1);
     }
     

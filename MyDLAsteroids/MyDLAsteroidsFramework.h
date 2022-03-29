@@ -69,7 +69,7 @@ protected:
     
     void sendBack(Entity* e);
     
-    void split(Entity* e);
+    void split(Entity* enemy, Entity* bullet);
     
     void flyApart(Entity* e1, Entity* e2);
     
