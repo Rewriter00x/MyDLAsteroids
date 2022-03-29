@@ -94,7 +94,7 @@ protected:
     
     bool collidesWithZone(Entity* e, int z);
     
-    bool newColides(int x, int y, int width, int height);
+    bool newCollides(int x, int y, int width, int height);
     
     void sendBack(Entity* e);
     
@@ -108,7 +108,7 @@ protected:
     
     void collided(Entity* e1, Entity* e2);
     
-    void checkColisions();
+    void checkCollisions();
     
     void moveEntity(Entity* e);
     

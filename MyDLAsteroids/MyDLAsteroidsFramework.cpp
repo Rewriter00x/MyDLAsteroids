@@ -59,7 +59,7 @@ bool MyDLAsteroidsFramework::collidesWithZone(Entity* e, int z) {
     return collidesWithZone(e->x(), e->y(), e->width(), e->height(), z);
 }
 
-bool MyDLAsteroidsFramework::newColides(int x, int y, int width, int height) {
+bool MyDLAsteroidsFramework::newCollides(int x, int y, int width, int height) {
     Rect r = getZones(x, y, width, height);
     for (int j = r.x1y1; j <= r.x1y2; j += Grid)
         for (int i = j; i <= j + (r.x2y1 - r.x1y1); i++)
@@ -85,7 +85,7 @@ void MyDLAsteroidsFramework::sendBack(Entity* e) {
         }
         getSpriteSize(isBig ? BigEnemySprite : SmallEnemySprite, width, height);
     } while (Character->collides(x - Threshold, y - Threshold,
-        width + Threshold * 2, height + Threshold * 2) || newColides(x, y, width, height));
+        width + Threshold * 2, height + Threshold * 2) || newCollides(x, y, width, height));
     float constSpeedX = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
     float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
     constSpeedX = rand() % 2 ? constSpeedX : -constSpeedX;
@@ -185,7 +185,7 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
     flyApart(e1, e2);
 }
 
-void MyDLAsteroidsFramework::checkColisions() {
+void MyDLAsteroidsFramework::checkCollisions() {
     zone();
 
     for (int z = 0; z < Grid * Grid; z++)
@@ -222,7 +222,7 @@ void MyDLAsteroidsFramework::fillEnemies() {
             y = rand() % MapHeight - DeltaHeight * 2;
             getSpriteSize(isBig ? BigEnemySprite : SmallEnemySprite, width, height);
         } while (Character->collides(x - Threshold, y - Threshold,
-            width + Threshold * 2, height + Threshold * 2) || newColides(x, y, width, height));
+            width + Threshold * 2, height + Threshold * 2) || newCollides(x, y, width, height));
         float constSpeedX = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
         constSpeedX = rand() % 2 ? constSpeedX : -constSpeedX;
@@ -370,8 +370,6 @@ bool MyDLAsteroidsFramework::Tick() {
     else {
         drawBackground();
         
-        checkColisions();
-        
         drawBullets();
         
         // Drawing entities
@@ -381,6 +379,8 @@ bool MyDLAsteroidsFramework::Tick() {
         // Moving entities
         moveEnemies();
         moveBullets();
+        
+        checkCollisions();
         
         Entity::updateSpeed();
         
