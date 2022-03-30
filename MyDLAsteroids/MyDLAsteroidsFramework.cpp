@@ -177,12 +177,7 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
     flyApart(e1, e2);
 }
 
-void MyDLAsteroidsFramework::checkCollisions() {
-    zone();
-
-    for (int z = 0; z < Grid * Grid; z++)
-        checkZoneCollision(z);
-    
+void MyDLAsteroidsFramework::autoShoot() {
     for (int j = CharacterThreshold.x1y1; j <= CharacterThreshold.x1y2; j += Grid) {
         for (int i = j; i <= j + (CharacterThreshold.x2y1 - CharacterThreshold.x1y1); i++) {
             for (Entity* enemy : Zones[i]) {
@@ -198,6 +193,16 @@ void MyDLAsteroidsFramework::checkCollisions() {
             }
         }
     }
+}
+
+void MyDLAsteroidsFramework::checkCollisions() {
+    zone();
+
+    for (int z = 0; z < Grid * Grid; z++)
+        checkZoneCollision(z);
+    
+    if (bAutoShooting)
+        autoShoot();
 }
 
 void MyDLAsteroidsFramework::moveEntity(Entity* e) {

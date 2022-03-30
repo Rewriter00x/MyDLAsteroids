@@ -123,6 +123,8 @@ protected:
     
     void collided(Entity* e1, Entity* e2);
     
+    void autoShoot();
+    
     void checkCollisions();
     
     void moveEntity(Entity* e);

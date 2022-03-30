@@ -83,6 +83,18 @@ void Entity::moveReverse() {
     _y -= speedY + _constSpeedY;
 }
 
+float Entity::distance(const Entity& e) const {
+    return distance(e.x(), e.y(), e.width(), e.height());
+}
+
+float Entity::distance(float x, float y, int width, int height) const {
+    float x1 = _x + _width / 2;
+    float y1 = _y + _height / 2;
+    float x2 = x + width / 2;
+    float y2 = y + height / 2;
+    return pow(x1 - x2, 2.0f) + pow(y1 - y2, 2.0f);
+}
+
 bool Entity::collides(const Entity& e) const {
     return collides(e.x(), e.y(), e.width(), e.height());
 }
@@ -92,11 +104,7 @@ bool Entity::collides(float x, float y, int width, int height) const {
     // It is better to overlap a bit then die colliding air
 //    return _x < x + width && _x + _width > x
 //        && _y < y + height && _y + _height > y;
-    float x1 = _x + _width / 2;
-    float y1 = _y + _height / 2;
-    float x2 = x + width / 2;
-    float y2 = y + height / 2;
-    return pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow((_height + height) / 2, 2);
+    return distance(x, y, width, height) <= pow((_height + height) / 2, 2);
 }
 
 void Entity::setSprite(Sprite* s) {

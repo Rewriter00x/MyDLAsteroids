@@ -61,6 +61,8 @@ public:
     void move();
     void moveReverse();
     void sendBack();
+    float distance(const Entity& e) const;
+    float distance(float x, float y, int width, int height) const;
     bool collides(const Entity& e) const;
     bool collides(float x, float y, int width, int height) const;
     void setSprite(Sprite* s);
