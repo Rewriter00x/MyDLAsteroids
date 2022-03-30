@@ -195,7 +195,15 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
         return;
     }
     
-    if (e1 == Character || e2 == Character) {
+    if (e2 == Character)
+        swap(e1, e2);
+    
+    if (e1 == Character) {
+        if (bPowerShield) {
+            e2->x() += e2->constSpeedX();
+            e2->y() += e2->constSpeedY();
+            return;
+        }
         bPaused = true;
         bGameOver = true;
         return;
@@ -435,8 +443,7 @@ bool MyDLAsteroidsFramework::Init() {
     AutoShootingPowerUpSprite = createSprite("data/reticle.png");
     PowerShieldPowerUpSprite = createSprite("data/enemy.png");
     
-    if (!(BackgroundSprite && Character->getSprite() && PowerShieldSprite && Cursor->getSprite()
-        && BigEnemySprite && SmallEnemySprite && BulletSprite && AutoShootingPowerUpSprite && PowerShieldPowerUpSprite))
+    if (!(BackgroundSprite && Character->getSprite() && PowerShieldSprite && Cursor->getSprite() && BigEnemySprite && SmallEnemySprite && BulletSprite && AutoShootingPowerUpSprite && PowerShieldPowerUpSprite))
         return false;
     
     restart();
