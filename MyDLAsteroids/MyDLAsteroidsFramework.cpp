@@ -77,7 +77,20 @@ bool MyDLAsteroidsFramework::newCollides(int x, int y, int width, int height) {
 }
 
 void MyDLAsteroidsFramework::spawnAbility(int x, int y) {
-    Sprite* powerUpSprite = rand() % 2 ? AutoShootingPowerUpSprite : PowerShieldPowerUpSprite;
+    Sprite* powerUpSprite;
+    switch(rand() % 3) {
+        case 0:
+            powerUpSprite = AutoShootingPowerUpSprite;
+            break;
+        case 1:
+            powerUpSprite = PowerShieldPowerUpSprite;
+            break;
+        case 2:
+            powerUpSprite = HomingBulletPowerUpSprite;;
+            break;
+        default:
+            return;
+    }
     PowerUps.push_back(new Entity(powerUpSprite, 0.0f, 0.0f, x, y));
 }
 
@@ -147,23 +160,25 @@ void MyDLAsteroidsFramework::zoneEntity(Entity* e) {
             Zones[i].push_back(e);
 }
 
+void MyDLAsteroidsFramework::zoneEntities(std::vector<Entity*>& from) {
+    for (Entity* e : from)
+        zoneEntity(e);
+}
+
 void MyDLAsteroidsFramework::zone() {
     for (int i = 0; i < Grid * Grid; i++)
         Zones[i].clear();
 
     // Zone all enemies
-    for (Entity* enemy : Enemies)
-        zoneEntity(enemy);
+    zoneEntities(Enemies);
     
     // Zone all bullets
-    for (Entity* bullet : Bullets)
-        zoneEntity(bullet);
-    for (Entity* bullet : AutoBullets)
-        zoneEntity(bullet);
+    zoneEntities(Bullets);
+    zoneEntities(AutoBullets);
+    zoneEntities(HomingBullets);
     
     // Zone all powerUps
-    for (Entity* powerUp : PowerUps)
-        zoneEntity(powerUp);
+    zoneEntities(PowerUps);
     
     // Zone character
     for (int j = CharacterZones.x1y1; j <= CharacterZones.x1y2; j += Grid)
@@ -172,7 +187,7 @@ void MyDLAsteroidsFramework::zone() {
 }
 
 bool MyDLAsteroidsFramework::isAbility(Entity* e) {
-    return e->getSprite() == AutoShootingPowerUpSprite || e->getSprite() == PowerShieldPowerUpSprite;
+    return e->getSprite() == AutoShootingPowerUpSprite || e->getSprite() == PowerShieldPowerUpSprite || e->getSprite() == HomingBulletPowerUpSprite;
 }
 
 void swap(Entity*& e1, Entity*& e2) {
@@ -219,7 +234,8 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
             split(e2, e1);
         
         if (!deleteEntity(e1, Bullets))
-            deleteEntity(e1, AutoBullets);
+            if (!deleteEntity(e1, AutoBullets))
+                deleteEntity(e1, HomingBullets);
         return;
     }
     
@@ -243,7 +259,7 @@ void MyDLAsteroidsFramework::autoShoot() {
         }
         if (!distances.empty()) {
             Entity* t = distances.top();
-            addBullet(t);
+            addAutoBullet(t);
             AutoShootingDelay.begin();
             distances.pop();
         }
@@ -312,10 +328,19 @@ void MyDLAsteroidsFramework::addBullet() {
     Bullets.push_back(createBullet(Cursor));
 }
 
-void MyDLAsteroidsFramework::addBullet(Entity* e) {
+void MyDLAsteroidsFramework::addAutoBullet(Entity* e) {
     if (AutoBullets.size() >= AutoAmmo)
         AutoBullets.erase(AutoBullets.begin());
     AutoBullets.push_back(createBullet(e));
+}
+
+void MyDLAsteroidsFramework::addHomingBullet(Entity* target) {
+    Entity* bullet = createBullet(Cursor);
+    if (target != nullptr ) {
+        bullet->constSpeedX() += target->constSpeedX();
+        bullet->constSpeedY() += target->constSpeedY();
+    }
+    HomingBullets.push_back(bullet);
 }
 
 bool MyDLAsteroidsFramework::deleteEntity(Entity* e, std::vector<Entity*>& from) {
@@ -376,6 +401,18 @@ void MyDLAsteroidsFramework::activatePowerUp() {
         PowerShieldDuration.begin();
         return;
     }
+    if (CurrentPowerUpSprite == HomingBulletPowerUpSprite) {
+        bHasPowerUp = false;
+        int zone = getZones(Cursor).x1y1;
+        Entity* target = nullptr;
+        for (Entity* enemy : Zones[zone]) {
+            if (enemy->getSprite() != SmallEnemySprite && enemy->getSprite() != BigEnemySprite)
+                continue;
+            if (Cursor->collides(*enemy))
+                target = enemy;
+        }
+        addHomingBullet(target);
+    }
 }
 
 void MyDLAsteroidsFramework::checkPowerUpsEnded() {
@@ -389,6 +426,7 @@ void MyDLAsteroidsFramework::restart() {
     fillEnemies();
     Bullets.clear();
     AutoBullets.clear();
+    HomingBullets.clear();
     PowerUps.clear();
     ShootingDelay.reset();
     AutoShootingDelay.reset();
@@ -442,8 +480,9 @@ bool MyDLAsteroidsFramework::Init() {
     
     AutoShootingPowerUpSprite = createSprite("data/reticle.png");
     PowerShieldPowerUpSprite = createSprite("data/enemy.png");
+    HomingBulletPowerUpSprite = createSprite("data/reticle_2.png");
     
-    if (!(BackgroundSprite && Character->getSprite() && PowerShieldSprite && Cursor->getSprite() && BigEnemySprite && SmallEnemySprite && BulletSprite && AutoShootingPowerUpSprite && PowerShieldPowerUpSprite))
+    if (!(BackgroundSprite && Character->getSprite() && PowerShieldSprite && Cursor->getSprite() && BigEnemySprite && SmallEnemySprite && BulletSprite && AutoShootingPowerUpSprite && PowerShieldPowerUpSprite && HomingBulletPowerUpSprite))
         return false;
     
     restart();
@@ -464,14 +503,12 @@ void MyDLAsteroidsFramework::Close() {
     
     delete Character;
     delete Cursor;
-    for (Entity* enemy : Enemies)
-        delete enemy;
-    for (Entity* bullet : Bullets)
-        delete bullet;
-    for (Entity* bullet : AutoBullets)
-        delete bullet;
-    for (Entity* powerUp : PowerUps)
-        delete powerUp;
+    
+    Enemies.clear();
+    Bullets.clear();
+    AutoBullets.clear();
+    HomingBullets.clear();
+    PowerUps.clear();
 }
 
 bool MyDLAsteroidsFramework::Tick() {
@@ -487,6 +524,7 @@ bool MyDLAsteroidsFramework::Tick() {
         // Drawing entities
         drawEntities(Bullets);
         drawEntities(AutoBullets);
+        drawEntities(HomingBullets);
         Character->draw();
         if (bPowerShield)
             drawSprite(PowerShieldSprite, Character->x(), Character->y());
@@ -497,6 +535,7 @@ bool MyDLAsteroidsFramework::Tick() {
         moveEntities(Enemies);
         moveEntities(Bullets);
         moveEntities(AutoBullets);
+        moveEntities(HomingBullets);
         moveEntities(PowerUps);
         
         if (bHasPowerUp)

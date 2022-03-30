@@ -90,6 +90,7 @@ class MyDLAsteroidsFramework : public Framework {
     Sprite* PauseSprite;
     Sprite* AutoShootingPowerUpSprite;
     Sprite* PowerShieldPowerUpSprite;
+    Sprite* HomingBulletPowerUpSprite;
     
     Sprite* CurrentPowerUpSprite;
     
@@ -100,6 +101,7 @@ class MyDLAsteroidsFramework : public Framework {
     std::vector<Entity*> Zones[Grid * Grid];
     std::vector<Entity*> Bullets;
     std::vector<Entity*> AutoBullets;
+    std::vector<Entity*> HomingBullets;
     std::vector<Entity*> PowerUps;
     
 public:
@@ -130,6 +132,8 @@ protected:
     
     void zoneEntity(Entity* e);
     
+    void zoneEntities(std::vector<Entity*>& from);
+    
     void zone();
     
     bool isAbility(Entity* e);
@@ -152,7 +156,9 @@ protected:
     
     void addBullet();
     
-    void addBullet(Entity* e);
+    void addAutoBullet(Entity* e);
+    
+    void addHomingBullet(Entity* target);
     
     bool deleteEntity(Entity* e, std::vector<Entity*>& from);
     
