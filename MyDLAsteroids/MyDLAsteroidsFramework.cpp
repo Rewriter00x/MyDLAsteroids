@@ -188,6 +188,8 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
         swap(e1, e2);
     
     if (isAbility(e1)) {
+        CurrentPowerUpSprite = e1->getSprite();
+        bHasPowerUp = true;
         deleteEntity(e1, PowerUps);
         return;
     }
@@ -319,6 +321,7 @@ bool MyDLAsteroidsFramework::deleteEntity(Entity* e, std::vector<Entity*>& from)
 void MyDLAsteroidsFramework::updateTimers() {
     ShootingDelay.tick();
     AutoShootingDelay.tick();
+    PowerUpDuration.tick();
 }
 
 void MyDLAsteroidsFramework::drawBackground() {
@@ -458,6 +461,9 @@ bool MyDLAsteroidsFramework::Tick() {
         moveEntities(Bullets);
         moveEntities(AutoBullets);
         moveEntities(PowerUps);
+        
+        if (bHasPowerUp)
+            drawSprite(CurrentPowerUpSprite, 0, 0);
         
         checkCollisions();
         

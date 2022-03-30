@@ -64,6 +64,7 @@ class MyDLAsteroidsFramework : public Framework {
     bool bGameOver = false;
     
     bool bAutoShooting = false;
+    bool bHasPowerUp = false;
     
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;
@@ -73,6 +74,7 @@ class MyDLAsteroidsFramework : public Framework {
         
     Timer ShootingDelay = Timer(1.0f, 0.05f);
     Timer AutoShootingDelay = Timer(1.0f, 0.05f);
+    Timer PowerUpDuration = Timer(1.0f, 0.02f);
     
     Rect CharacterZones;
     Rect CharacterThreshold;
@@ -84,6 +86,8 @@ class MyDLAsteroidsFramework : public Framework {
     Sprite* GameOverSprite;
     Sprite* PauseSprite;
     Sprite* AutoShootingSprite;
+    
+    Sprite* CurrentPowerUpSprite;
     
     Entity* Character;
     Entity* Cursor;
