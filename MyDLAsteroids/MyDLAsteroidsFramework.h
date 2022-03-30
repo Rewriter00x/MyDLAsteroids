@@ -136,11 +136,7 @@ protected:
     
     void moveEntityReverse(Entity* e);
     
-    void moveEnemies();
-    
-    void moveBullets();
-    
-    void movePowerUps();
+    void moveEntities(std::vector<Entity*>& from);
     
     void fillEnemies();
     
@@ -156,11 +152,7 @@ protected:
     
     void drawBackground();
     
-    void drawPowerUps();
-    
-    void drawEnemies();
-    
-    void drawBullets();
+    void drawEntities(std::vector<Entity*>& from);
     
     void restart();
 

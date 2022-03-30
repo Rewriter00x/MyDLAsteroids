@@ -259,21 +259,9 @@ void MyDLAsteroidsFramework::moveEntityReverse(Entity* e) {
     inRange(e);
 }
 
-void MyDLAsteroidsFramework::moveEnemies() {
-    for (Entity* enemy : Enemies)
-        moveEntityReverse(enemy);
-}
-
-void MyDLAsteroidsFramework::moveBullets() {
-    for (Entity* bullet : Bullets)
-        moveEntityReverse(bullet);
-    for (Entity* bullet : AutoBullets)
-        moveEntityReverse(bullet);
-}
-
-void MyDLAsteroidsFramework::movePowerUps() {
-    for (Entity* powerUp : PowerUps)
-        moveEntityReverse(powerUp);
+void MyDLAsteroidsFramework::moveEntities(std::vector<Entity*>& from) {
+    for (Entity* e : from)
+        moveEntityReverse(e);
 }
 
 void MyDLAsteroidsFramework::fillEnemies() {
@@ -357,21 +345,9 @@ void MyDLAsteroidsFramework::drawBackground() {
     }
 }
 
-void MyDLAsteroidsFramework::drawPowerUps() {
-    for (Entity* powerUp : PowerUps)
-        powerUp->draw();
-}
-
-void MyDLAsteroidsFramework::drawEnemies() {
-    for (Entity* enemy : Enemies)
-        enemy->draw();
-}
-
-void MyDLAsteroidsFramework::drawBullets() {
-    for (Entity* bullet : Bullets)
-        bullet->draw();
-    for (Entity* bullet : AutoBullets)
-        bullet->draw();
+void MyDLAsteroidsFramework::drawEntities(std::vector<Entity *>& from) {
+    for (Entity* e : from)
+        e->draw();
 }
 
 void MyDLAsteroidsFramework::restart() {
@@ -471,15 +447,17 @@ bool MyDLAsteroidsFramework::Tick() {
         drawBackground();
         
         // Drawing entities
-        drawBullets();
+        drawEntities(Bullets);
+        drawEntities(AutoBullets);
         Character->draw();
-        drawPowerUps();
-        drawEnemies();
+        drawEntities(PowerUps);
+        drawEntities(Enemies);
         
         // Moving entities
-        moveEnemies();
-        moveBullets();
-        movePowerUps();
+        moveEntities(Enemies);
+        moveEntities(Bullets);
+        moveEntities(AutoBullets);
+        moveEntities(PowerUps);
         
         checkCollisions();
         
