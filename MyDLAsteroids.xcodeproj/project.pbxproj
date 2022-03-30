@@ -48,6 +48,7 @@
 		6EA45C3627EF129800C66E00 /* MyDLAsteroidsFramework.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MyDLAsteroidsFramework.cpp; sourceTree = "<group>"; };
 		6EA45C3827EF2A3000C66E00 /* MyFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyFramework.h; sourceTree = "<group>"; };
 		6EA45C3927EF2A3000C66E00 /* MyFramework.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MyFramework.cpp; sourceTree = "<group>"; };
+		6EB1819D27F4636D00015BC4 /* power_shield.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = power_shield.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +105,7 @@
 				6E6C0D7027EF0B1400E0D9E1 /* enemy.png */,
 				6E6C0D7127EF0B1400E0D9E1 /* spaceship.png */,
 				6E6C0D7227EF0B1400E0D9E1 /* dot.png */,
+				6EB1819D27F4636D00015BC4 /* power_shield.png */,
 				6E6C0D7327EF0B1400E0D9E1 /* reticle.png */,
 				6E6C0D7427EF0B1400E0D9E1 /* circle.tga */,
 				6E6C0D7527EF0B1400E0D9E1 /* background.png */,

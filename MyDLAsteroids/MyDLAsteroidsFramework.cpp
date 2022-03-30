@@ -77,7 +77,8 @@ bool MyDLAsteroidsFramework::newCollides(int x, int y, int width, int height) {
 }
 
 void MyDLAsteroidsFramework::spawnAbility(int x, int y) {
-    PowerUps.push_back(new Entity(AutoShootingSprite, 0.0f, 0.0f, x, y));
+    Sprite* powerUpSprite = rand() % 2 ? AutoShootingPowerUpSprite : PowerShieldPowerUpSprite;
+    PowerUps.push_back(new Entity(powerUpSprite, 0.0f, 0.0f, x, y));
 }
 
 void MyDLAsteroidsFramework::sendBack(Entity* e) {
@@ -171,7 +172,7 @@ void MyDLAsteroidsFramework::zone() {
 }
 
 bool MyDLAsteroidsFramework::isAbility(Entity* e) {
-    return e->getSprite() == AutoShootingSprite;
+    return e->getSprite() == AutoShootingPowerUpSprite || e->getSprite() == PowerShieldPowerUpSprite;
 }
 
 void swap(Entity*& e1, Entity*& e2) {
@@ -322,6 +323,7 @@ void MyDLAsteroidsFramework::updateTimers() {
     ShootingDelay.tick();
     AutoShootingDelay.tick();
     AutoShootingDuration.tick();
+    PowerShieldDuration.tick();
 }
 
 void MyDLAsteroidsFramework::drawBackground() {
@@ -354,10 +356,16 @@ void MyDLAsteroidsFramework::drawEntities(std::vector<Entity *>& from) {
 }
 
 void MyDLAsteroidsFramework::activatePowerUp() {
-    if (CurrentPowerUpSprite == AutoShootingSprite) {
+    if (CurrentPowerUpSprite == AutoShootingPowerUpSprite) {
         bAutoShooting = true;
         bHasPowerUp = false;
         AutoShootingDuration.begin();
+        return;
+    }
+    if (CurrentPowerUpSprite == PowerShieldPowerUpSprite) {
+        bPowerShield = true;
+        bHasPowerUp = false;
+        PowerShieldDuration.begin();
         return;
     }
 }
@@ -365,6 +373,8 @@ void MyDLAsteroidsFramework::activatePowerUp() {
 void MyDLAsteroidsFramework::checkPowerUpsEnded() {
     if (bAutoShooting && AutoShootingDuration.ended())
         bAutoShooting = false;
+    if (bPowerShield && PowerShieldDuration.ended())
+        bPowerShield = false;
 }
 
 void MyDLAsteroidsFramework::restart() {
@@ -407,6 +417,8 @@ bool MyDLAsteroidsFramework::Init() {
     CharacterThreshold = getZones(Character->x() - Threshold, Character->y() - Threshold, Character->width() + Threshold * 2, Character->height() + Threshold * 2);
     DistanceCompare::Character = Character;
     
+    PowerShieldSprite = createSprite("data/power_shield.png");
+    
     Cursor = new Entity(createSprite("data/circle.tga"));
     
     GameOverSprite = createSprite("data/game_over.png");
@@ -420,10 +432,11 @@ bool MyDLAsteroidsFramework::Init() {
     
     getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
     
-    AutoShootingSprite = createSprite("data/reticle.png");
+    AutoShootingPowerUpSprite = createSprite("data/reticle.png");
+    PowerShieldPowerUpSprite = createSprite("data/enemy.png");
     
-    if (!(BackgroundSprite && Character->getSprite() && Cursor->getSprite()
-        && BigEnemySprite && SmallEnemySprite && BulletSprite && AutoShootingSprite))
+    if (!(BackgroundSprite && Character->getSprite() && PowerShieldSprite && Cursor->getSprite()
+        && BigEnemySprite && SmallEnemySprite && BulletSprite && AutoShootingPowerUpSprite && PowerShieldPowerUpSprite))
         return false;
     
     restart();
@@ -468,6 +481,8 @@ bool MyDLAsteroidsFramework::Tick() {
         drawEntities(Bullets);
         drawEntities(AutoBullets);
         Character->draw();
+        if (bPowerShield)
+            drawSprite(PowerShieldSprite, Character->x(), Character->y());
         drawEntities(PowerUps);
         drawEntities(Enemies);
         

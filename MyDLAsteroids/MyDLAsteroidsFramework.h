@@ -9,28 +9,28 @@ struct Rect {
 
 struct Timer {
     const float end, step;
-    float start;
+    float current;
     
-    Timer(float end, float step) : end(end), step(step), start(end) {}
+    Timer(float end, float step) : end(end), step(step), current(end) {}
     
     void begin() {
-        start = 0.0f;
+        current = 0.0f;
     }
     
     void reset() {
-        start = end;
+        current = end;
     }
     
     void tick() {
         if (ended())
             return;
-        start += step;
+        current += step;
         if (ended())
             reset();
     }
     
     bool ended() {
-        return start >= end;
+        return current >= end;
     }
 };
 
@@ -64,6 +64,7 @@ class MyDLAsteroidsFramework : public Framework {
     bool bGameOver = false;
     
     bool bAutoShooting = false;
+    bool bPowerShield = false;
     bool bHasPowerUp = false;
     
     int BackgroundSpriteWidth;
@@ -75,6 +76,7 @@ class MyDLAsteroidsFramework : public Framework {
     Timer ShootingDelay = Timer(1.0f, 0.05f);
     Timer AutoShootingDelay = Timer(1.0f, 0.05f);
     Timer AutoShootingDuration = Timer(1.0f, 0.005f);
+    Timer PowerShieldDuration = Timer(1.0f, 0.005f);
     
     Rect CharacterZones;
     Rect CharacterThreshold;
@@ -83,9 +85,11 @@ class MyDLAsteroidsFramework : public Framework {
     Sprite* BigEnemySprite;
     Sprite* SmallEnemySprite;
     Sprite* BulletSprite;
+    Sprite* PowerShieldSprite;
     Sprite* GameOverSprite;
     Sprite* PauseSprite;
-    Sprite* AutoShootingSprite;
+    Sprite* AutoShootingPowerUpSprite;
+    Sprite* PowerShieldPowerUpSprite;
     
     Sprite* CurrentPowerUpSprite;
     
