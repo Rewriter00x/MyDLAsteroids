@@ -76,6 +76,10 @@ bool MyDLAsteroidsFramework::newCollides(int x, int y, int width, int height) {
     return false;
 }
 
+void MyDLAsteroidsFramework::spawnAbility(int x, int y) {
+    PowerUps.push_back(new Entity(AutoShootingSprite, 0.0f, 0.0f, x, y));
+}
+
 void MyDLAsteroidsFramework::sendBack(Entity* e) {
     bool isBig = rand() % 2;
     int x, y, width, height , entityWidth, entityHeight, r;
@@ -98,6 +102,8 @@ void MyDLAsteroidsFramework::sendBack(Entity* e) {
     float constSpeedY = (float)(rand() % (int)(Entity::maxSpeed * 20.0f)) / 100.0f;
     constSpeedX = rand() % 2 ? constSpeedX : -constSpeedX;
     constSpeedY = rand() % 2 ? constSpeedY : -constSpeedY;
+    if (rand() % 101 <= (int)(AbilityChance * 100))
+        spawnAbility(e->x(), e->y());
     e->x() = x;
     e->y() = y;
     e->constSpeedX() = constSpeedX;
@@ -154,15 +160,37 @@ void MyDLAsteroidsFramework::zone() {
     for (Entity* bullet : AutoBullets)
         zoneEntity(bullet);
     
+    // Zone all powerUps
+    for (Entity* powerUp : PowerUps)
+        zoneEntity(powerUp);
+    
     // Zone character
     for (int j = CharacterZones.x1y1; j <= CharacterZones.x1y2; j += Grid)
         for (int i = j; i <= j + (CharacterZones.x2y1 - CharacterZones.x1y1); i++)
             Zones[i].push_back(Character);
 }
 
+bool MyDLAsteroidsFramework::isAbility(Entity* e) {
+    return e->getSprite() == AutoShootingSprite;
+}
+
+void swap(Entity*& e1, Entity*& e2) {
+    Entity* temp = e1;
+    e1 = e2;
+    e2 = temp;
+}
+
 void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
-    if ((e1 == Character && e2->getSprite() == BulletSprite) || (e2 == Character && e1->getSprite() == BulletSprite) || (e1->getSprite() == BulletSprite && e2->getSprite() == BulletSprite))
+    if ((e1 == Character && e2->getSprite() == BulletSprite) || (e2 == Character && e1->getSprite() == BulletSprite) || (e1->getSprite() == BulletSprite && e2->getSprite() == BulletSprite) || (isAbility(e1) && e2 != Character) || (e1 != Character && isAbility(e2)))
         return;
+    
+    if (isAbility(e2))
+        swap(e1, e2);
+    
+    if (isAbility(e1)) {
+        deleteEntity(e1, PowerUps);
+        return;
+    }
     
     if (e1 == Character || e2 == Character) {
         bPaused = true;
@@ -170,19 +198,17 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
         return;
     }
     
-    if (e2->getSprite() == BulletSprite) {
-        Entity* temp = e1;
-        e1 = e2;
-        e2 = temp;
-    }
+    if (e2->getSprite() == BulletSprite)
+        swap(e1, e2);
+    
     if (e1->getSprite() == BulletSprite) {
         if (e2->getSprite() == SmallEnemySprite)
             sendBack(e2);
         else
             split(e2, e1);
         
-        if (!deleteBullet(e1, Bullets))
-            deleteBullet(e1, AutoBullets);
+        if (!deleteEntity(e1, Bullets))
+            deleteEntity(e1, AutoBullets);
         return;
     }
     
@@ -245,6 +271,11 @@ void MyDLAsteroidsFramework::moveBullets() {
         moveEntityReverse(bullet);
 }
 
+void MyDLAsteroidsFramework::movePowerUps() {
+    for (Entity* powerUp : PowerUps)
+        moveEntityReverse(powerUp);
+}
+
 void MyDLAsteroidsFramework::fillEnemies() {
     Enemies.clear();
     for (int i = 0; i < EnemyNumber; i++) {
@@ -288,7 +319,7 @@ void MyDLAsteroidsFramework::addBullet(Entity* e) {
     AutoBullets.push_back(createBullet(e));
 }
 
-bool MyDLAsteroidsFramework::deleteBullet(Entity* e, std::vector<Entity*>& from) {
+bool MyDLAsteroidsFramework::deleteEntity(Entity* e, std::vector<Entity*>& from) {
     for (int i = 0; i < from.size(); i++)
         if (from[i] == e) {
             from.erase(from.begin() + i);
@@ -326,6 +357,11 @@ void MyDLAsteroidsFramework::drawBackground() {
     }
 }
 
+void MyDLAsteroidsFramework::drawPowerUps() {
+    for (Entity* powerUp : PowerUps)
+        powerUp->draw();
+}
+
 void MyDLAsteroidsFramework::drawEnemies() {
     for (Entity* enemy : Enemies)
         enemy->draw();
@@ -342,8 +378,13 @@ void MyDLAsteroidsFramework::restart() {
     fillEnemies();
     Bullets.clear();
     AutoBullets.clear();
+    PowerUps.clear();
     ShootingDelay.reset();
     AutoShootingDelay.reset();
+    Entity::speedX = 0.0f;
+    Entity::speedY = 0.0f;
+    bGameOver = false;
+    bPaused = false;
 }
 
 void MyDLAsteroidsFramework::PreInit(int& width, int& height, bool& fullscreen) {
@@ -385,8 +426,10 @@ bool MyDLAsteroidsFramework::Init() {
     
     getSpriteSize(BackgroundSprite, BackgroundSpriteWidth, BackgroundSpriteHeight);
     
+    AutoShootingSprite = createSprite("data/reticle.png");
+    
     if (!(BackgroundSprite && Character->getSprite() && Cursor->getSprite()
-        && BigEnemySprite && SmallEnemySprite && BulletSprite))
+        && BigEnemySprite && SmallEnemySprite && BulletSprite && AutoShootingSprite))
         return false;
     
     restart();
@@ -413,6 +456,8 @@ void MyDLAsteroidsFramework::Close() {
         delete bullet;
     for (Entity* bullet : AutoBullets)
         delete bullet;
+    for (Entity* powerUp : PowerUps)
+        delete powerUp;
 }
 
 bool MyDLAsteroidsFramework::Tick() {
@@ -425,15 +470,16 @@ bool MyDLAsteroidsFramework::Tick() {
     else {
         drawBackground();
         
-        drawBullets();
-        
         // Drawing entities
+        drawBullets();
         Character->draw();
+        drawPowerUps();
         drawEnemies();
         
         // Moving entities
         moveEnemies();
         moveBullets();
+        movePowerUps();
         
         checkCollisions();
         
@@ -457,11 +503,7 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
         return;
     
     if (bGameOver) {
-        Entity::speedX = 0.0f;
-        Entity::speedY = 0.0f;
         restart();
-        bGameOver = false;
-        bPaused = false;
         return;
     }
     

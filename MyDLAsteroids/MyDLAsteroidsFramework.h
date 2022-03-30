@@ -63,7 +63,7 @@ class MyDLAsteroidsFramework : public Framework {
     bool bPaused = false;
     bool bGameOver = false;
     
-    bool bAutoShooting = true;
+    bool bAutoShooting = false;
     
     int BackgroundSpriteWidth;
     int BackgroundSpriteHeight;
@@ -83,6 +83,7 @@ class MyDLAsteroidsFramework : public Framework {
     Sprite* BulletSprite;
     Sprite* GameOverSprite;
     Sprite* PauseSprite;
+    Sprite* AutoShootingSprite;
     
     Entity* Character;
     Entity* Cursor;
@@ -91,6 +92,7 @@ class MyDLAsteroidsFramework : public Framework {
     std::vector<Entity*> Zones[Grid * Grid];
     std::vector<Entity*> Bullets;
     std::vector<Entity*> AutoBullets;
+    std::vector<Entity*> PowerUps;
     
 public:
     MyDLAsteroidsFramework(int ScreenWidth, int ScreenHeight, int MapWidth, int MapHeight, int EnemyNumber, int Ammo, float AbilityChance);
@@ -110,6 +112,8 @@ protected:
     
     bool newCollides(int x, int y, int width, int height);
     
+    void spawnAbility(int x, int y);
+    
     void sendBack(Entity* e);
     
     void split(Entity* enemy, Entity* bullet);
@@ -119,6 +123,8 @@ protected:
     void zoneEntity(Entity* e);
     
     void zone();
+    
+    bool isAbility(Entity* e);
     
     void collided(Entity* e1, Entity* e2);
     
@@ -134,6 +140,8 @@ protected:
     
     void moveBullets();
     
+    void movePowerUps();
+    
     void fillEnemies();
     
     Entity* createBullet(Entity* e);
@@ -142,11 +150,13 @@ protected:
     
     void addBullet(Entity* e);
     
-    bool deleteBullet(Entity* e, std::vector<Entity*>& from);
+    bool deleteEntity(Entity* e, std::vector<Entity*>& from);
     
     void updateTimers();
     
     void drawBackground();
+    
+    void drawPowerUps();
     
     void drawEnemies();
     
