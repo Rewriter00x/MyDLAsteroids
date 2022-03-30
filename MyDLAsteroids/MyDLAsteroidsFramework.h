@@ -1,8 +1,7 @@
 #pragma once
 #include <vector>
 #include "Framework.h"
-
-class Entity;
+#include "Entity.h"
 
 struct Rect {
     int x1y1, x2y1, x1y2, x2y2;
@@ -174,5 +173,4 @@ public:
     virtual void onKeyReleased(FRKey k) override;
 
     virtual const char* GetTitle() override;
-
 };

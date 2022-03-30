@@ -1,8 +1,20 @@
 #include <cmath>
+#include <queue>
 #include "MyDLAsteroidsFramework.h"
 #include "Entity.h"
 
 const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
+
+// Comparator for priority_queue for autoshoooting
+struct DistanceCompare {
+    static Entity* Character;
+
+    bool operator()(Entity* lhs, Entity* rhs) {
+        return Character->distance(*lhs) > Character->distance(*rhs);
+    }
+};
+
+Entity* DistanceCompare::Character = nullptr;
 
 MyDLAsteroidsFramework::MyDLAsteroidsFramework(int ScreenWidth, int ScreenHeight, int MapWidth, int MapHeight, int EnemyNumber, int Ammo, float AbilityChance)
     : ScreenWidth(ScreenWidth), ScreenHeight(ScreenHeight), MapWidth(MapWidth),
@@ -178,19 +190,25 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
 }
 
 void MyDLAsteroidsFramework::autoShoot() {
-    for (int j = CharacterThreshold.x1y1; j <= CharacterThreshold.x1y2; j += Grid) {
-        for (int i = j; i <= j + (CharacterThreshold.x2y1 - CharacterThreshold.x1y1); i++) {
-            for (Entity* enemy : Zones[i]) {
-                if (enemy == Character)
-                    continue;
-                if (enemy->collides(Character->x() - Threshold, Character->y() - Threshold, Character->width() + Threshold * 2, Character->height() + Threshold * 2)) {
-                    if (AutoShootingDelay.ended()) {
-                        addBullet(enemy);
-                        AutoShootingDelay.begin();
-                        return;
+    static std::priority_queue<Entity*, std::vector<Entity*>, DistanceCompare> distances;
+    distances = std::priority_queue<Entity*, std::vector<Entity*>, DistanceCompare>();
+    if (AutoShootingDelay.ended()) {
+        for (int j = CharacterThreshold.x1y1; j <= CharacterThreshold.x1y2; j += Grid) {
+            for (int i = j; i <= j + (CharacterThreshold.x2y1 - CharacterThreshold.x1y1); i++) {
+                for (Entity* enemy : Zones[i]) {
+                    if (enemy == Character || enemy->getSprite() == BulletSprite)
+                        continue;
+                    if (enemy->collides(Character->x() - Threshold, Character->y() - Threshold, Character->width() + Threshold * 2, Character->height() + Threshold * 2))   {
+                        distances.push(enemy);
                     }
                 }
             }
+        }
+        if (!distances.empty()) {
+            Entity* t = distances.top();
+            addBullet(t);
+            AutoShootingDelay.begin();
+            distances.pop();
         }
     }
 }
@@ -352,6 +370,7 @@ bool MyDLAsteroidsFramework::Init() {
         (ScreenWidth - characterWidth) / 2, (ScreenHeight - characterHeight) / 2);
     CharacterZones = getZones(Character);
     CharacterThreshold = getZones(Character->x() - Threshold, Character->y() - Threshold, Character->width() + Threshold * 2, Character->height() + Threshold * 2);
+    DistanceCompare::Character = Character;
     
     Cursor = new Entity(createSprite("data/circle.tga"));
     
