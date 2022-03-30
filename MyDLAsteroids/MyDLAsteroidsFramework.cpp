@@ -321,7 +321,7 @@ bool MyDLAsteroidsFramework::deleteEntity(Entity* e, std::vector<Entity*>& from)
 void MyDLAsteroidsFramework::updateTimers() {
     ShootingDelay.tick();
     AutoShootingDelay.tick();
-    PowerUpDuration.tick();
+    AutoShootingDuration.tick();
 }
 
 void MyDLAsteroidsFramework::drawBackground() {
@@ -353,6 +353,20 @@ void MyDLAsteroidsFramework::drawEntities(std::vector<Entity *>& from) {
         e->draw();
 }
 
+void MyDLAsteroidsFramework::activatePowerUp() {
+    if (CurrentPowerUpSprite == AutoShootingSprite) {
+        bAutoShooting = true;
+        bHasPowerUp = false;
+        AutoShootingDuration.begin();
+        return;
+    }
+}
+
+void MyDLAsteroidsFramework::checkPowerUpsEnded() {
+    if (bAutoShooting && AutoShootingDuration.ended())
+        bAutoShooting = false;
+}
+
 void MyDLAsteroidsFramework::restart() {
     fillEnemies();
     Bullets.clear();
@@ -364,6 +378,7 @@ void MyDLAsteroidsFramework::restart() {
     Entity::speedY = 0.0f;
     bGameOver = false;
     bPaused = false;
+    bHasPowerUp = false;
 }
 
 void MyDLAsteroidsFramework::PreInit(int& width, int& height, bool& fullscreen) {
@@ -467,6 +482,8 @@ bool MyDLAsteroidsFramework::Tick() {
         
         checkCollisions();
         
+        checkPowerUpsEnded();
+        
         Entity::updateSpeed();
         
         updateTimers();
@@ -504,6 +521,8 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
             return;
             
         case FRMouseButton::RIGHT:
+            if (bHasPowerUp)
+                activatePowerUp();
             return;
             
         default:

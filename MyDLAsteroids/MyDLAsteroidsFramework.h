@@ -74,7 +74,7 @@ class MyDLAsteroidsFramework : public Framework {
         
     Timer ShootingDelay = Timer(1.0f, 0.05f);
     Timer AutoShootingDelay = Timer(1.0f, 0.05f);
-    Timer PowerUpDuration = Timer(1.0f, 0.02f);
+    Timer AutoShootingDuration = Timer(1.0f, 0.005f);
     
     Rect CharacterZones;
     Rect CharacterThreshold;
@@ -157,6 +157,10 @@ protected:
     void drawBackground();
     
     void drawEntities(std::vector<Entity*>& from);
+    
+    void activatePowerUp();
+    
+    void checkPowerUpsEnded();
     
     void restart();
 
