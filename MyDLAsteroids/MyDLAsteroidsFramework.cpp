@@ -569,6 +569,11 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
         return;
     }
     
+    if (bPaused) {
+        bPaused = false;
+        return;
+    }
+    
     switch (button) {
         case FRMouseButton::LEFT:
             if (ShootingDelay.ended()) {
@@ -578,7 +583,7 @@ void MyDLAsteroidsFramework::onMouseButtonClick(FRMouseButton button, bool isRel
             return;
             
         case FRMouseButton::MIDDLE:
-            bPaused = !bPaused;
+            bPaused = true;
             return;
             
         case FRMouseButton::RIGHT:
