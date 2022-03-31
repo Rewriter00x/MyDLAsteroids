@@ -7,14 +7,14 @@ const char* MyDLAsteroidsFramework::Title = "MyDLAsteroids";
 
 // Comparator for priority_queue for autoshoooting
 struct DistanceCompare {
-    static Entity* Character;
-
+    const Entity* Character;
+    
+    DistanceCompare(const Entity* Character) : Character(Character) {}
+    
     bool operator()(Entity* lhs, Entity* rhs) {
         return Character->distance(*lhs) > Character->distance(*rhs);
     }
 };
-
-Entity* DistanceCompare::Character = nullptr;
 
 MyDLAsteroidsFramework::MyDLAsteroidsFramework(int ScreenWidth, int ScreenHeight, int MapWidth, int MapHeight, int EnemyNumber, int Ammo, float AbilityChance)
     : ScreenWidth(ScreenWidth), ScreenHeight(ScreenHeight), MapWidth(MapWidth),
@@ -44,7 +44,7 @@ Rect MyDLAsteroidsFramework::getZones(int x, int y, int width, int height) {
     return Rect{x1y1, x2y1, x1y2, x2y2};
 }
 
-Rect MyDLAsteroidsFramework::getZones(Entity* e) {
+Rect MyDLAsteroidsFramework::getZones(const Entity* e) {
     return getZones(e->x(), e->y(), e->width(), e->height());
 }
 
@@ -243,8 +243,8 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
 }
 
 void MyDLAsteroidsFramework::autoShoot() {
-    static std::priority_queue<Entity*, std::vector<Entity*>, DistanceCompare> distances;
-    distances = std::priority_queue<Entity*, std::vector<Entity*>, DistanceCompare>();
+    static std::priority_queue<Entity*, std::vector<Entity*>, DistanceCompare> distances((DistanceCompare(Character)));
+    distances = std::priority_queue<Entity*, std::vector<Entity*>, DistanceCompare>(DistanceCompare(Character));
     if (AutoShootingDelay.ended()) {
         for (int j = CharacterThreshold.x1y1; j <= CharacterThreshold.x1y2; j += Grid) {
             for (int i = j; i <= j + (CharacterThreshold.x2y1 - CharacterThreshold.x1y1); i++) {
@@ -461,7 +461,6 @@ bool MyDLAsteroidsFramework::Init() {
         (ScreenWidth - characterWidth) / 2, (ScreenHeight - characterHeight) / 2);
     CharacterZones = getZones(Character);
     CharacterThreshold = getZones(Character->x() - Threshold, Character->y() - Threshold, Character->width() + Threshold * 2, Character->height() + Threshold * 2);
-    DistanceCompare::Character = Character;
     
     PowerShieldSprite = createSprite("data/power_shield.png");
     

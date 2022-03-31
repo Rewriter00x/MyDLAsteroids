@@ -94,7 +94,7 @@ class MyDLAsteroidsFramework : public Framework {
     
     Sprite* CurrentPowerUpSprite;
     
-    Entity* Character;
+    const Entity* Character;
     Entity* Cursor;
     
     std::vector<Entity*> Enemies;
@@ -112,7 +112,7 @@ protected:
     
     Rect getZones(int x, int y, int width, int height);
     
-    Rect getZones(Entity* e);
+    Rect getZones(const Entity* e);
     
     void checkZoneCollision(int z);
     
