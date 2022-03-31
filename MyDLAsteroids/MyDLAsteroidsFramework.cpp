@@ -63,7 +63,7 @@ bool MyDLAsteroidsFramework::collidesWithZone(int x, int y, int width, int heigh
     return false;
 }
 
-bool MyDLAsteroidsFramework::collidesWithZone(Entity* e, int z) {
+bool MyDLAsteroidsFramework::collidesWithZone(const Entity* e, int z) {
     return collidesWithZone(e->x(), e->y(), e->width(), e->height(), z);
 }
 
@@ -181,7 +181,7 @@ void MyDLAsteroidsFramework::zone() {
     zoneEntities(PowerUps);
 }
 
-bool MyDLAsteroidsFramework::isAbility(Entity* e) {
+bool MyDLAsteroidsFramework::isAbility(const Entity* e) {
     return e->getSprite() == AutoShootingPowerUpSprite || e->getSprite() == PowerShieldPowerUpSprite || e->getSprite() == HomingBulletPowerUpSprite;
 }
 
@@ -313,7 +313,7 @@ void MyDLAsteroidsFramework::fillEnemies() {
     }
 }
 
-Entity* MyDLAsteroidsFramework::createBullet(Entity* e) {
+Entity* MyDLAsteroidsFramework::createBullet(const Entity* e) {
     static float x = Character->x() + (Character->width() - BulletSpriteWidth) / 2;
     static float y = Character->y() + (Character->height() - BulletSpriteHeight) / 2;
     float constSpeedX = e->x() - x;
@@ -330,13 +330,13 @@ void MyDLAsteroidsFramework::addBullet() {
     Bullets.push_back(createBullet(Cursor));
 }
 
-void MyDLAsteroidsFramework::addAutoBullet(Entity* e) {
+void MyDLAsteroidsFramework::addAutoBullet(const Entity* e) {
     if (AutoBullets.size() >= AutoAmmo)
         AutoBullets.erase(AutoBullets.begin());
     AutoBullets.push_back(createBullet(e));
 }
 
-void MyDLAsteroidsFramework::addHomingBullet(Entity* target) {
+void MyDLAsteroidsFramework::addHomingBullet(const Entity* target) {
     Entity* bullet = createBullet(Cursor);
     if (target != nullptr ) {
         bullet->constSpeedX() += target->constSpeedX();
@@ -345,7 +345,7 @@ void MyDLAsteroidsFramework::addHomingBullet(Entity* target) {
     HomingBullets.push_back(bullet);
 }
 
-bool MyDLAsteroidsFramework::deleteEntity(Entity* e, std::vector<Entity*>& from) {
+bool MyDLAsteroidsFramework::deleteEntity(const Entity* e, std::vector<Entity*>& from) {
     for (int i = 0; i < from.size(); i++)
         if (from[i] == e) {
             from.erase(from.begin() + i);

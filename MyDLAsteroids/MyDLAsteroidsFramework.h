@@ -118,7 +118,7 @@ protected:
     
     bool collidesWithZone(int x, int y, int width, int height, int z);
     
-    bool collidesWithZone(Entity* e, int z);
+    bool collidesWithZone(const Entity* e, int z);
     
     bool newCollides(int x, int y, int width, int height);
     
@@ -136,7 +136,7 @@ protected:
     
     void zone();
     
-    bool isAbility(Entity* e);
+    bool isAbility(const Entity* e);
     
     void collided(Entity* e1, Entity* e2);
     
@@ -156,15 +156,15 @@ protected:
     
     void fillEnemies();
     
-    Entity* createBullet(Entity* e);
+    Entity* createBullet(const Entity* e);
     
     void addBullet();
     
-    void addAutoBullet(Entity* e);
+    void addAutoBullet(const Entity* e);
     
-    void addHomingBullet(Entity* target);
+    void addHomingBullet(const Entity* target);
     
-    bool deleteEntity(Entity* e, std::vector<Entity*>& from);
+    bool deleteEntity(const Entity* e, std::vector<Entity*>& from);
     
     void updateTimers();
     
