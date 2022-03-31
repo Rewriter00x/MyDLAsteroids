@@ -140,7 +140,11 @@ protected:
     
     void collided(Entity* e1, Entity* e2);
     
+    void characterCollided(Entity* entity);
+    
     void autoShoot();
+    
+    void checkCharacterCollision();
     
     void checkCollisions();
     

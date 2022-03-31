@@ -179,11 +179,6 @@ void MyDLAsteroidsFramework::zone() {
     
     // Zone all powerUps
     zoneEntities(PowerUps);
-    
-    // Zone character
-    for (int j = CharacterZones.x1y1; j <= CharacterZones.x1y2; j += Grid)
-        for (int i = j; i <= j + (CharacterZones.x2y1 - CharacterZones.x1y1); i++)
-            Zones[i].push_back(Character);
 }
 
 bool MyDLAsteroidsFramework::isAbility(Entity* e) {
@@ -197,32 +192,8 @@ void swap(Entity*& e1, Entity*& e2) {
 }
 
 void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
-    if ((e1 == Character && e2->getSprite() == BulletSprite) || (e2 == Character && e1->getSprite() == BulletSprite) || (e1->getSprite() == BulletSprite && e2->getSprite() == BulletSprite) || (isAbility(e1) && e2 != Character) || (e1 != Character && isAbility(e2)))
+    if ((e1->getSprite() == BulletSprite && e2->getSprite() == BulletSprite) || (isAbility(e1) || isAbility(e2)))
         return;
-    
-    if (isAbility(e2))
-        swap(e1, e2);
-    
-    if (isAbility(e1)) {
-        CurrentPowerUpSprite = e1->getSprite();
-        bHasPowerUp = true;
-        deleteEntity(e1, PowerUps);
-        return;
-    }
-    
-    if (e2 == Character)
-        swap(e1, e2);
-    
-    if (e1 == Character) {
-        if (bPowerShield) {
-            e2->x() += e2->constSpeedX();
-            e2->y() += e2->constSpeedY();
-            return;
-        }
-        bPaused = true;
-        bGameOver = true;
-        return;
-    }
     
     if (e2->getSprite() == BulletSprite)
         swap(e1, e2);
@@ -240,6 +211,27 @@ void MyDLAsteroidsFramework::collided(Entity* e1, Entity* e2) {
     }
     
     flyApart(e1, e2);
+}
+
+void MyDLAsteroidsFramework::characterCollided(Entity* entity) {
+    if (entity->getSprite() == BulletSprite)
+        return;
+    
+    if (isAbility(entity)) {
+        CurrentPowerUpSprite = entity->getSprite();
+        bHasPowerUp = true;
+        deleteEntity(entity, PowerUps);
+        return;
+    }
+    
+    if (bPowerShield) {
+        entity->x() += entity->constSpeedX();
+        entity->y() += entity->constSpeedY();
+        return;
+    }
+    
+    bPaused = true;
+    bGameOver = true;
 }
 
 void MyDLAsteroidsFramework::autoShoot() {
@@ -266,11 +258,21 @@ void MyDLAsteroidsFramework::autoShoot() {
     }
 }
 
+void MyDLAsteroidsFramework::checkCharacterCollision() {
+    for (int j = CharacterZones.x1y1; j <= CharacterZones.x1y2; j += Grid)
+        for (int i = j; i <= j + (CharacterZones.x2y1 - CharacterZones.x1y1); i++)
+            for (Entity* enemy : Zones[i])
+                if (Character->collides(*enemy))
+                    characterCollided(enemy);
+}
+
 void MyDLAsteroidsFramework::checkCollisions() {
     zone();
 
     for (int z = 0; z < Grid * Grid; z++)
         checkZoneCollision(z);
+    
+    checkCharacterCollision();
     
     if (bAutoShooting)
         autoShoot();
