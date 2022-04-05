@@ -92,17 +92,8 @@ void parse(Vars i, char* value) {
 }
 
 void parse(const char* variable, char* value) {
-    // Orginal version. Works on debug, but does not on release (-window != -window)
-//    for (int i = 0; i < varc; i++) {
-//        if (variable == varv[i]) {
-//            parse(Vars(i), value);
-//            return;
-//        }
-//        std::cout << "\"" << variable << "\" != \"" << varv[i] << "\"\n" << strlen(variable) << " != " << strlen(varv[i]) << "\n";
-//    }
-//    std::cerr << "Bad variable \"" << variable << "\""<< std::endl;
     for (int i = 0; i < varc; i++) {
-        if (strlen(variable) == strlen(varv[i])) {
+        if (!strcmp(variable, varv[i])) {
             parse(Vars(i), value);
             return;
         }
