@@ -45,8 +45,7 @@ void parseFloat(char* value, float& res) {
 
 void parseSize(char* value, int& width, int& height) {
     char v[strlen(value)];
-    for (int i = 0; i < strlen(value); i++)
-        v[i] = value[i];
+    strcpy(v, value);
     const char* w = strtok(v, "x");
     const char* h = strtok(nullptr, "x");
     int i = atoi(w);
